@@ -29,7 +29,7 @@ $app->add(TwigMiddleware::create($app, $twig));
 // 3. VOS ROUTES
 // ==================================================
 $app->get('/', function (Request $request, Response $response) {
-    $view = Twig::fromRequest($request);
+    $view = Twig::fromRequest(request: $request);
     return $view->render($response, 'home.html.twig', [
         'name' => 'John',
     ]);
