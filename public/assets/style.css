@@ -1,0 +1,489 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"); /* POLICE PAGE SE CONNECTER*/
+
+@media (max-width: 1065px) {
+  .navbar-desktop {
+    display: none !important;
+  }
+  .navbar-mobile {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 1066px) {
+  .navbar-desktop {
+    display: flex !important;
+  }
+  .navbar-mobile {
+    display: none !important;
+  }
+}
+
+/* Rendre la navbar sticky avec une transition fluide */
+.navbar {
+  position: -webkit-sticky; /* Pour Safari */
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Pour s'assurer que la navbar reste au-dessus des autres éléments */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.7
+  ); /* Fond semi-transparent pour la navbar */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Transition fluide */
+  padding: 0.5rem 1rem; /* Ajoute un peu de marge interne */
+}
+
+/* Quand la navbar devient sticky et que l'utilisateur a scrollé */
+.navbar.scrolled {
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Légèrement plus opaque pour la navbar sticky */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre pour un effet de profondeur */
+}
+
+/* Optionnel : Ajouter un effet d'ombre sur la navbar sticky */
+.navbar-light {
+  box-shadow: none; /* Ombre initiale */
+}
+
+/* Pour que la navbar occupe bien toute la largeur */
+.navbar-expand-md {
+  width: 100%;
+}
+
+.navbar .navbar-brand {
+  color: rgba(155, 135, 245, 0.8) !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+}
+
+.navbar-nav .nav-link {
+  white-space: nowrap;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #8b5cf6;
+}
+
+.navbar-nav .nav-link:hover i {
+  color: #8b5cf6;
+}
+
+/* Exclure l'icône du hover */
+.nav-sign .nav-link:hover i {
+  color: inherit; /* Ne change pas la couleur de l'icône au survol */
+}
+
+.navbar-nav .nav-link {
+  transition: none;
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px); /* Déplace l'élément de 20px vers le bas */
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0); /* Reviens à la position normale */
+  }
+}
+
+.job-description-box {
+  animation: slideUp 0.5s ease forwards; /* Appliquer l'animation */
+  opacity: 0; /* Assurez-vous que l'élément commence avec une opacité de 0 */
+}
+
+#maintitre {
+  animation: slideUp 0.5s ease-out;
+}
+
+.slogan p {
+  animation: slideUp 0.5s ease-out;
+}
+
+.keywords {
+  animation: slideUp 0.5s ease-out;
+}
+.search-container {
+  position: relative;
+  margin-top: 15px;
+  animation: slideUp 0.5s ease-out;
+}
+
+.search-input {
+  height: 50px;
+  border-radius: 50px;
+  padding-left: 50px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+  animation: slideUp 0.5s ease-out;
+}
+
+/* Styles pour l'état de focus */
+.search-input:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+  outline: none;
+}
+
+.search-input:hover {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+  outline: none;
+}
+.search-input::placeholder {
+  color: #a9a9a9; /* Gris clair pour le texte du placeholder */
+}
+
+.search-icon {
+  position: absolute;
+  top: 32%;
+  left: 15px;
+  color: #888;
+  animation: slideUp 0.5s ease-out;
+}
+
+.btn-light {
+  background-color: #f3f4f6; /* Couleur bg-gray-100 */
+  color: #4a5568; /* Couleur text-gray-600 */
+}
+
+.btn-light:hover {
+  background-color: rgba(155, 135, 245, 0.1); /* Couleur hover bg-primary/10 */
+  color: #6b5cf6; /* Couleur hover text-primary */
+}
+
+.rounded-pill {
+  border-radius: 50rem; /* Arrondi complet */
+}
+
+.text-sm {
+  font-size: 0.875rem; /* Taille de texte petite */
+}
+/* Reset de base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Container principal */
+.content-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px; /* Réduit l'espace entre les blocs à 30px */
+  width: 100%;
+  padding: 0 20px; /* Ajoute un peu d'espace sur les côtés */
+}
+
+/* Container de la description */
+.description-box {
+  margin: 110px 0; /* Réduit les marges verticales */
+  padding: 20px;
+  width: 347px;
+  height: 156px;
+  border-radius: 18px;
+  background-color: #9b87f50d;
+}
+
+/* Corps de la section */
+.content-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  width: 100%;
+  height: 100%;
+}
+
+/* Contenu de la div interne */
+.inner-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Titre principal */
+.unique-h1 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* Bouton primaire */
+.unique-btn-primary {
+  background-color: transparent;
+  color: #ee82ee;
+  border: 0;
+  font-size: 14px;
+}
+
+/* Lien d'inscription */
+.inscription-color {
+  color: rgb(155, 135, 245);
+  text-decoration: none;
+}
+
+.inscription-color:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .content-container {
+    gap: 20px; /* Ajuste l'espace entre les blocs pour les écrans plus petits */
+  }
+
+  .description-box {
+    margin: 30px 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .unique-body {
+    width: 100%;
+    height: 100%;
+  }
+
+  .unique-box-2 {
+    width: 100%;
+    height: 440px;
+  }
+
+  .content-container {
+    padding: 0 10px;
+  }
+
+  .description-box {
+    width: 100%; /* Prend toute la largeur sur mobile */
+    max-width: 347px; /* Mais ne dépasse pas la largeur originale */
+    margin: 20px 0; /* Réduit encore plus les marges sur mobile */
+  }
+}
+
+code * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.login-container {
+  margin: 50px auto;
+}
+
+.login-body {
+  position: relative;
+  width: 720px;
+  height: 440px;
+  margin: 20px auto;
+  border: 1px solid #dddd;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.registration-body {
+  position: relative;
+  width: 720px;
+  height: 600px;
+  margin: 20px auto;
+  border: 1px solid #dddd;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.login-box {
+  padding: 10px;
+}
+
+.login-title {
+  font-size: 24px; /* Taille de police pour le titre */
+  font-weight: 700; /* Poids de la police */
+}
+
+.login-form .form-control {
+  border-radius: 50px; /* Arrondi des champs de texte */
+  border: 1px solid #ccc; /* Bordure des champs */
+  transition: border-color 0.3s, box-shadow 0.3s; /* Transition pour un effet fluide */
+}
+
+/* Styles de focus pour les champs de formulaire */
+.login-form .form-control:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+  outline: none;
+}
+
+.btn-primary {
+  background-color: rgb(155, 135, 245);
+  border: none;
+  border-radius: 50px;
+}
+
+.btn-primary:hover {
+  background-color: rgb(130, 110, 220);
+}
+
+.login-footer {
+  font-size: 14px;
+}
+
+.signup-link {
+  color: rgb(155, 135, 245);
+  text-decoration: none;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 767px) {
+  body {
+    padding: 0px;
+  }
+
+  .login-body {
+    width: 100%;
+    height: 100%;
+  }
+
+  .login-box {
+    width: 100%;
+  }
+}
+
+/* Container METIER principal */
+.job-content-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 0 0px;
+}
+
+/* Styles pour les blocs de métiers */
+.job-description-box {
+  margin: 20px;
+  padding: 20px;
+  width: 400px;
+  height: 300px;
+  border-radius: 18px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  transition: box-shadow 0.3s ease;
+}
+
+/* Ombre au survol */
+.job-description-box:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .job-description-box {
+    width: 100%;
+    max-width: 347px;
+  }
+}
+
+.btn-hover:hover {
+  background-color: rgba(
+    155,
+    135,
+    245,
+    0.2
+  ) !important; /* Légèrement plus foncé */
+  transition: background-color 0.2s ease-in-out;
+}
+
+/*FOOTER*/
+footer {
+  background: #f8f9fa;
+  padding: 30px 0;
+  width: 100%;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 20px;
+  align-items: start;
+}
+
+.footer-section {
+  text-align: left;
+}
+
+.footer-section h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin: 5px 0;
+}
+
+.footer-section ul li a {
+  text-decoration: none;
+  color: #444;
+  transition: color 0.3s;
+}
+
+.footer-section ul li a:hover {
+  color: #6a5acd;
+}
+
+.brand {
+  color: #6a5acd;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+hr {
+  margin: 20px auto;
+  width: 80%;
+  border: 0.5px solid #ddd;
+}
+
+.copyright {
+  font-size: 14px;
+  color: #666;
+  margin-top: 20px;
+}
+
+/* Responsive pour petits écrans */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-section {
+    margin-bottom: 20px;
+  }
+}

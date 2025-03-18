@@ -1,0 +1,328 @@
+
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <div
+      class="titre d-flex flex-column align-items-center justify-content-center mt-4"
+      id="maintitre"
+    >
+      <h1
+        class="fw-bold text-dark text-center display-4 display-sm-5 display-lg-6"
+      >
+        Trouvez votre stage idéal
+      </h1>
+    </div>
+    <div
+      class="slogan d-flex flex-column align-items-center justify-content-center mt-4"
+    >
+      <p
+        class="lead text-center mx-auto fw-normal"
+        style="max-width: 40rem; color: #6b7280"
+      >
+        Découvrez et postulez à des milliers d'opportunités de stage auprès des
+        meilleures entreprises du monde entier.
+      </p>
+    </div>
+
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="search-container">
+            <input
+              type="text"
+              class="form-control search-input"
+              placeholder="Recherchez un stage par titre, entreprise ou compétences..."
+            />
+            <i class="fas fa-search search-icon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="keywords d-flex flex-wrap justify-content-center gap-2 mt-3">
+      <button
+        class="btn btn-light btn-outline-light px-4 py-1 rounded-pill text-sm text-gray-600 hover:bg-primary hover:text-primary transition-colors"
+      >
+        Cybersécurité
+      </button>
+      <button
+        class="btn btn-light btn-outline-light px-4 py-1 rounded-pill text-sm text-gray-600 hover:bg-primary hover:text-primary transition-colors"
+      >
+        Design
+      </button>
+      <button
+        class="btn btn-light btn-outline-light px-4 py-1 rounded-pill text-sm text-gray-600 hover:bg-primary hover:text-primary transition-colors"
+      >
+        Marketing Digital
+      </button>
+      <button
+        class="btn btn-light btn-outline-light px-4 py-1 rounded-pill text-sm text-gray-600 hover:bg-primary hover:text-primary transition-colors"
+      >
+        Réseaux
+      </button>
+    </div>
+    <div class="description-container">
+      <div class="content-container">
+        <!-- Premier bloc -->
+        <div class="description-box">
+          <div class="content-box">
+            <div class="inner-box">
+              <div class="text-center">
+                <i
+                  class="bi bi-briefcase"
+                  style="font-size: 32px; margin-bottom: 5px; color: #8b5cf6"
+                ></i>
+                <h2 class="fs-2 fw-bold text-dark">2,500+</h2>
+                <p class="text-muted fw-normal">Stages Actifs</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Deuxième bloc -->
+        <div class="description-box">
+          <div class="content-box">
+            <div class="inner-box">
+              <div class="text-center">
+                <i
+                  class="bi bi-building"
+                  style="font-size: 32px; margin-bottom: 5px; color: #8b5cf6"
+                ></i>
+                <h2 class="fs-2 fw-bold text-dark">500+</h2>
+                <p class="text-muted fw-normal">Entreprises Partenaires</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Troisième bloc -->
+        <div class="description-box">
+          <div class="content-box">
+            <div class="inner-box">
+              <div class="text-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-users"
+                  style="margin-bottom: 5px; color: #8b5cf6"
+                >
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <h2 class="fs-2 fw-bold text-dark">10,000+</h2>
+                <p class="text-muted fw-normal">Réussites Étudiantes</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <h2
+        class="h4 font-weight-bold"
+        style="color: #000000; margin-bottom: 1rem"
+      >
+        Stages à la une
+      </h2>
+    </div>
+
+    <!--BLOC METIER A LA UNE-->
+    <div class="job-description-container">
+      <div class="job-content-container">
+        <!-- Premier bloc -->
+        <div class="job-description-box">
+          <div class="job-content-box">
+            <div class="job-inner-box">
+              <div class="d-flex align-items-start">
+                <img
+                  src="https://placehold.co/64x64"
+                  alt="TechCorp logo"
+                  class="w-12 h-12 rounded-lg object-contain bg-gray-50 me-3"
+                  style="flex-shrink: 0;"
+                />
+                <div>
+                  <h3 class="fw-semibold" style="font-size: 18px; color: #000000">
+                    Stagiaire en développement logiciel
+                  </h3>
+                  <p
+                    class="text-primary font-medium"
+                    style="color: #8b5cf6 !important; font-weight: 500"
+                  >
+                    Entreprise
+                  </p>
+                  <!-- Conteneur pour les icônes et le texte -->
+                  <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin">
+                        <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
+                      <span style="margin-left: 5px;">Localisation</span>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
+                        <path d="M8 2v4"></path>
+                        <path d="M16 2v4"></path>
+                        <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                        <path d="M3 10h18"></path>
+                      </svg>
+                      <span style="margin-left: 5px;">Date</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign">
+                        <line x1="12" x2="12" y1="2" y2="22"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                      </svg>
+                      <span style="margin-left: 5px;">Salaire</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-top border-gray-100" style="border-top: 1px solid #e5e7eb;"></div>
+          <div class="d-flex justify-content-center" style="margin-top: -10px;">
+            <button class="btn btn-hover" 
+              style="background-color: rgba(155, 135, 245, 0.1); color: #6b5cf6; width: 100%; font-weight: 500; padding: 0.5rem; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send me-2" style="color: #6b5cf6;">
+                <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path>
+                <path d="m21.854 2.147-10.94 10.939"></path>
+              </svg>
+              Postuler
+            </button>
+          </div>
+        </div>
+        <!-- Deuxième bloc -->
+        <div class="job-description-box">
+          <div class="job-content-box">
+            <div class="job-inner-box">
+              <div class="d-flex align-items-start"> 
+                <img
+                  src="https://placehold.co/64x64"
+                  alt="TechCorp logo"
+                  class="w-12 h-12 rounded-lg object-contain bg-gray-50 me-3"
+                  style="flex-shrink: 0;"
+                />
+                <div>
+                  <h3 class="fw-semibold" style="font-size: 18px; color: #000000">
+                    Stagiaire Concepteur UX
+                  </h3>
+                  <p
+                    class="text-primary font-medium"
+                    style="color: #8b5cf6 !important; font-weight: 500"
+                  >
+                    Entreprise
+                  </p>
+                  <!-- Conteneur pour les icônes et le texte -->
+                  <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin">
+                        <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
+                      <span style="margin-left: 5px;">Localisation</span>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
+                        <path d="M8 2v4"></path>
+                        <path d="M16 2v4"></path>
+                        <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                        <path d="M3 10h18"></path>
+                      </svg>
+                      <span style="margin-left: 5px;">Date</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign">
+                        <line x1="12" x2="12" y1="2" y2="22"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                      </svg>
+                      <span style="margin-left: 5px;">Salaire</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-top border-gray-100" style="border-top: 1px solid #e5e7eb;"></div>
+          <div class="d-flex justify-content-center mt-0">
+            <button class="btn btn-hover" 
+              style="background-color: rgba(155, 135, 245, 0.1); color: #6b5cf6; width: 100%; font-weight: 500; padding: 0.5rem; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center ;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send me-2" style="color: #6b5cf6;">
+                <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path>
+                <path d="m21.854 2.147-10.94 10.939"></path>
+              </svg>
+              Postuler
+            </button>
+          </div>
+        </div>
+        <!-- Troisième bloc -->
+        <div class="job-description-box">
+          <div class="job-content-box">
+            <div class="job-inner-box">
+              <div class="d-flex align-items-start"> 
+                <img
+                  src="https://placehold.co/64x64"
+                  alt="TechCorp logo"
+                  class="w-12 h-12 rounded-lg object-contain bg-gray-50 me-3"
+                  style="flex-shrink: 0;"
+                />
+                <div>
+                  <h3 class="fw-semibold" style="font-size: 18px; color: #000000">
+                    Stagiaire en Data Science
+                  </h3>
+                  <p
+                    class="text-primary font-medium"
+                    style="color: #8b5cf6 !important; font-weight: 500"
+                  >
+                    Entreprise
+                  </p>
+                  <!-- Conteneur pour les icônes et le texte -->
+                  <div style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin">
+                        <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                      </svg>
+                      <span style="margin-left: 5px;">Localisation</span>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
+                        <path d="M8 2v4"></path>
+                        <path d="M16 2v4"></path>
+                        <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                        <path d="M3 10h18"></path>
+                      </svg>
+                      <span style="margin-left: 5px;">Date</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign">
+                        <line x1="12" x2="12" y1="2" y2="22"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                      </svg>
+                      <span style="margin-left: 5px;">Salaire</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-top border-gray-100" style="border-top: 1px solid #e5e7eb;"></div>
+          <div class="d-flex justify-content-center mt-0">
+            <button class="btn btn-hover" 
+              style="background-color: rgba(155, 135, 245, 0.1); color: #6b5cf6; width: 100%; font-weight: 500; padding: 0.5rem; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center ;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send me-2" style="color: #6b5cf6;">
+                <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path>
+                <path d="m21.854 2.147-10.94 10.939"></path>
+              </svg>
+              Postuler
+            </button>
+          </div>
+        </div>
+{% endblock %}
