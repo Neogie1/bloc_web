@@ -36,7 +36,7 @@
     <!-- Navbar pour PC (visible à partir de md) -->
     <nav class="navbar navbar-expand-md navbar-light bg-white navbar-desktop" style="height: 4rem">
       <div class="container">
-        <a class="navbar-brand" href="index.php">internnect</a>
+        <a class="navbar-brand" href="{{ url_for('home') }}">internnect</a>
         <div class="collapse navbar-collapse">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
@@ -86,16 +86,11 @@
                 ></i
                 ><span>Déposer une offre</span></a>
             </li>
-            <!-- Bouton SIGN UP -->
+            <!-- Bouton SIGN IN -->
             <li class="nav-sign mx-3">
-              <a
-                class="nav-link btn btn-primary rounded-pill text-white px-3"
-                href="login.html.twig"
-                style="background-color: rgb(155, 135, 245)"
-              >
-                <i class="bi bi-person" style="font-size: 18px"></i>
-                Se connecter
-              </a>
+<a class="nav-link btn btn-primary rounded-pill text-white px-3" href="{{ url_for('login') }}" style="background-color: rgb(155, 135, 245)">
+  <i class="bi bi-person" style="font-size: 18px"></i> Se connecter
+</a>
             </li>
           </ul>
         </div>
@@ -105,7 +100,7 @@
     <!-- Navbar pour Mobile (visible uniquement sur les petits écrans) -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white navbar-mobile">
       <div class="container">
-        <a class="navbar-brand" href="index.php">internnect</a>
+        <a class="navbar-brand" href="{{ url_for('home') }}">internnect</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -127,13 +122,9 @@
             <li class="nav-item">
               <a class="nav-link" href="signin.html">Déposer une offre</a>
             </li>
-            <!-- Bouton SIGN UP -->
+            <!-- Bouton SIGN IN -->
             <li class="nav-item">
-              <a
-                class="nav-link btn btn-primary text-white px-3"
-                href="login.html.twig"
-                >Se connecter</a
-              >
+            <a class="nav-link btn btn-primary text-white px-3" href="{{ url_for('login') }}">Se connecter</a>
             </li>
           </ul>
         </div>
