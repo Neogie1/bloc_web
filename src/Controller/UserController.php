@@ -62,14 +62,14 @@ class UserController
         // =============================================
         // TEST TEMPORAIRE - DÉCOMMENTEZ CES 6 LIGNES POUR TESTER
         // =============================================
-        $this->session->set('user', [
-            'id' => 1,
-            'email' => 'test@test.com',
-            'password' => 'password',
-            'role' => 'etudiant'
-        ]);
-        error_log('TEST: Session forcée - Redirection vers /dashboard');
-        return $response->withHeader('Location', '/dashboard')->withStatus(302);
+        // $this->session->set('user', [
+        //     'id' => 1,
+        //     'email' => 'test@test.com',
+        //     'password' => 'password',
+        //     'role' => 'etudiant'
+        // ]);
+        // error_log('TEST: Session forcée - Redirection vers /dashboard');
+        // return $response->withHeader('Location', '/dashboard')->withStatus(302);
         // =============================================
         // FIN DU TEST TEMPORAIRE
         // =============================================
@@ -78,41 +78,69 @@ class UserController
         
         error_log('Tentative de connexion avec: ' . print_r($data, true));
 
-        // Validation
-        if (empty($data['email']) || empty($data['password'])) {
-            $this->session->set('login_error', 'Email et mot de passe requis');
+        // Validation améliorée
+        $errors = [];
+        $oldInput = ['email' => $data['email'] ?? ''];
+
+        if (empty($data['email'])) {
+            $errors['email'] = 'L\'email est requis';
+        } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Format d\'email invalide';
+        }
+
+        if (empty($data['password'])) {
+            $errors['password'] = 'Le mot de passe est requis';
+        }
+
+        if (!empty($errors)) {
+            $this->session->set('login_errors', $errors);
+            $this->session->set('old_input', $oldInput);
             return $response->withHeader('Location', '/login')->withStatus(302);
         }
 
+        // Recherche utilisateur
         $user = $this->entityManager->getRepository(User::class)
             ->findOneBy(['email' => $data['email']]);
 
         error_log('Utilisateur trouvé: ' . ($user ? $user->getEmail() : 'null'));
 
         // Vérification identifiants
-        if (!$user || !password_verify($data['password'], $user->getPassword())) {
-            error_log('Échec de connexion: ' . ($user ? 'Mot de passe incorrect' : 'Email introuvable'));
-            $this->session->set('login_error', 'Email ou mot de passe incorrect');
+        if (!$user) {
+            error_log('Échec de connexion: Email introuvable');
+            $this->session->set('login_error', 'Aucun compte trouvé avec cet email');
+            $this->session->set('old_input', $oldInput);
             return $response->withHeader('Location', '/login')->withStatus(302);
         }
 
-        // Connexion réussie - Double méthode de sauvegarde
-        $_SESSION['user'] = [
+        if (!password_verify($data['password'], $user->getPassword())) {
+            error_log('Échec de connexion: Mot de passe incorrect');
+            $this->session->set('login_error', 'Mot de passe incorrect');
+            $this->session->set('old_input', $oldInput);
+            return $response->withHeader('Location', '/login')->withStatus(302);
+        }
+
+        // Connexion réussie
+        $userData = [
             'id' => $user->getId(),
             'email' => $user->getEmail(),
             'role' => $user->getRole()
         ];
-        $this->session->set('user', $_SESSION['user']);
+        
+        $_SESSION['user'] = $userData;
+        $this->session->set('user', $userData);
 
         error_log('Connexion réussie pour: ' . $user->getEmail());
-        error_log('Données de session: ' . print_r($_SESSION['user'], true));
 
-        // Redirection selon le rôle - Version absolue garantie
-        $baseUrl = 'http://' . $_SERVER['HTTP_HOST'];
+        // Nettoyage des erreurs et anciennes entrées
+        $this->session->delete('login_errors');
+        $this->session->delete('old_input');
+        $this->session->delete('login_error');
+
+        // Redirection selon le rôle
         $redirectUrl = match($user->getRole()) {
-            User::ROLE_ADMIN => $baseUrl . '/admin/dashboard',
-            User::ROLE_PILOTE => $baseUrl . '/pilote/dashboard',
-            default => $baseUrl . '/dashboard'
+            User::ROLE_ADMIN => '/admin/dashboard',
+            User::ROLE_PILOTE => '/pilote/dashboard',
+            default => '/dashboard'
         };
 
         return $response->withHeader('Location', $redirectUrl)->withStatus(302);
