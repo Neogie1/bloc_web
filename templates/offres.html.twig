@@ -1,6 +1,10 @@
 {% extends "layout.html.twig" %}
+
 {% block content %}
 <div class="container my-5">
+  <!-- Lien absolu vers votre CSS -->
+  <link rel="stylesheet" href="/assets/style.css">
+
   {% if is_search and searchQuery %}
     <div class="alert alert-info mb-4">
       Résultats pour : <strong>"{{ searchQuery }}"</strong>

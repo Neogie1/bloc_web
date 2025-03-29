@@ -1,0 +1,100 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord Admin</title>
+    <!-- Chemins absolus pour les assets -->
+    <link rel="stylesheet" href="/assets/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-dashboard">
+</br></br>
+    <main class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <i class="fas fa-bars me-2"></i> Menu Admin
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="{{ url_for('admin.dashboard') }}" 
+                           class="list-group-item list-group-item-action active">
+                           <i class="fas fa-tachometer-alt me-2"></i> Tableau de bord
+                        </a>
+                        <a href="#" 
+                           class="list-group-item list-group-item-action">
+                           <i class="fas fa-users me-2"></i> Utilisateurs
+                        </a>
+                        <a href="#" 
+                           class="list-group-item list-group-item-action">
+                           <i class="fas fa-cog me-2"></i> Paramètres
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenu principal -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="h4 mb-0">
+                            <i class="fas fa-tachometer-alt me-2"></i> Tableau de bord
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            Connecté en tant que <strong>{{ session.get('user').email }}</strong>
+                            <span class="badge bg-secondary ms-2">{{ session.get('user').role }}</span>
+                        </div>
+
+                        <!-- Statistiques -->
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <div class="card border-success h-100">
+                                    <div class="card-body text-center">
+                                        <h3 class="h5">
+                                            <i class="fas fa-users me-2"></i> Utilisateurs
+                                        </h3>
+                                        <p class="display-6 text-success">42</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card border-primary h-100">
+                                    <div class="card-body text-center">
+                                        <h3 class="h5">
+                                            <i class="fas fa-newspaper me-2"></i> Articles
+                                        </h3>
+                                        <p class="display-6 text-primary">128</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card border-warning h-100">
+                                    <div class="card-body text-center">
+                                        <h3 class="h5">
+                                            <i class="fas fa-comments me-2"></i> Commentaires
+                                        </h3>
+                                        <p class="display-6 text-warning">256</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chemins absolus pour les scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/admin.js"></script>
+</body>
+</html>
+{% endblock %}

@@ -12,6 +12,7 @@ use SlimSession\Helper as SessionHelper;
 use Slim\Middleware\Session;
 use DI\Container;
 use App\Controller\OfferController;
+use App\Domain\User;  // ou le bon namespace selon votre structure
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -87,19 +88,21 @@ $container->set(AuthMiddleware::class, function (Container $c) {
 // ROUTES
 // ==================================================
 
+// Routes publiques
 $app->get('/offres', [OfferController::class, 'search'])->setName('searchOffers');
 $app->get('/offres/list', [OfferController::class, 'search'])->setName('listOffers');
 
 // Route d'accueil (page publique)
-$app->get('/', function (Request $request, Response $response) use ($app) {
-    $view = $app->getContainer()->get('view');
-    return $view->render($response, 'home.html.twig');
+$app->get('/', function (Request $request, Response $response) {
+    return $this->get('view')->render($response, 'home.html.twig');
 })->setName('home');
 
 // Route de connexion (GET pour afficher le formulaire)
-$app->get('/login', function (Request $request, Response $response) use ($app) {
-    $view = $app->getContainer()->get('view');
-    return $view->render($response, 'login.html.twig');
+$app->get('/login', function (Request $request, Response $response) {
+    return $this->get('view')->render($response, 'login.html.twig', [
+        'old_input' => $this->get('session')->get('old_input', []),
+        'errors' => $this->get('session')->get('login_errors', [])
+    ]);
 })->setName('login');
 
 // Route de connexion (POST pour vérifier et authentifier)
@@ -109,13 +112,30 @@ $app->post('/login', [UserController::class, 'login'])->setName('loginUser');
 $app->post('/user', [UserController::class, 'createUser'])->setName('createUser');
 
 // Routes protégées (nécessitent une authentification)
-$app->group('', function ($group) use ($app) {
+$app->group('', function ($group) {
     
-    // Route du tableau de bord (accessible après connexion)
-    $group->get('/dashboard', function (Request $request, Response $response) use ($app) {
-        $view = $app->getContainer()->get('view');
-        return $view->render($response, 'dashboard.html.twig');
+    // Route du tableau de bord principal
+    $group->get('/dashboard', function (Request $request, Response $response) {
+        $session = $this->get('session');
+        return $this->get('view')->render($response, 'dashboard.html.twig', [
+            'user' => $session->get('user')
+        ]);
     })->setName('dashboard');
+
+    // Route du tableau de bord admin avec vérification de rôle
+    $group->get('/admin/dashboard', function (Request $request, Response $response) {
+        $session = $this->get('session');
+        $user = $session->get('user');
+        
+        if ($user['role'] !== User::ROLE_ADMIN) {
+            return $response->withHeader('Location', '/dashboard')
+                           ->withStatus(403);
+        }
+        
+        return $this->get('view')->render($response, 'admin/dashboard.html.twig', [
+            'user' => $user
+        ]);
+    })->setName('admin.dashboard');
     
     // Route pour afficher les informations de l'utilisateur actuel
     $group->get('/me', [UserController::class, 'getCurrentUser'])->setName('currentUser');
@@ -123,8 +143,7 @@ $app->group('', function ($group) use ($app) {
     // Route pour déconnexion
     $group->post('/logout', [UserController::class, 'logout'])->setName('logout');
     
-})->add($app->getContainer()->get(AuthMiddleware::class));  // Applique le middleware AuthMiddleware à ce groupe de routes
-
+})->add($app->getContainer()->get(AuthMiddleware::class));
 // ==================================================
 // DÉMARRAGE DE L'APPLICATION
 // ==================================================
