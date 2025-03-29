@@ -20,50 +20,75 @@ class OfferController
 
     public function list(Request $request, Response $response): Response
     {
-        $page = $request->getQueryParam('page', 1);
-        $limit = 9; // 3 lignes × 3 offres
+        $queryParams = $request->getQueryParams();
+        $page = isset($queryParams['page']) ? (int)$queryParams['page'] : 1;
+        $limit = 9;
         $offset = ($page - 1) * $limit;
 
         $repository = $this->entityManager->getRepository(Offer::class);
-        $offers = $repository->findBy([], null, $limit, $offset);
+        
+        // Requête paginée avec tri
+        $offers = $repository->createQueryBuilder('o')
+            ->orderBy('o.createdAt', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
         $totalOffers = $repository->count([]);
-        $totalPages = ceil($totalOffers / $limit);
+        $totalPages = max(1, ceil($totalOffers / $limit));
 
         return $this->view->render($response, 'offres.html.twig', [
             'offers' => $offers,
             'current_page' => $page,
-            'total_pages' => $totalPages
+            'total_pages' => $totalPages,
+            'total_offers' => $totalOffers,
+            'is_search' => false,
+            'searchQuery' => null
         ]);
     }
 
     public function search(Request $request, Response $response): Response
     {
-        // Récupère le terme de recherche
         $queryParams = $request->getQueryParams();
         $searchTerm = $queryParams['q'] ?? '';
+        $page = isset($queryParams['page']) ? (int)$queryParams['page'] : 1;
+        $limit = 9;
+        $offset = ($page - 1) * $limit;
 
-        // Requête de base sans filtre si vide
-        $qb = $this->entityManager->createQueryBuilder();
-        $qb->select('o')
-           ->from(Offer::class, 'o');
+        $qb = $this->entityManager->createQueryBuilder()
+            ->select('o')
+            ->from(Offer::class, 'o')
+            ->orderBy('o.createdAt', 'DESC');
 
-        // Ajoute les conditions de recherche si terme non vide
         if (!empty($searchTerm)) {
             $qb->where($qb->expr()->orX(
                 $qb->expr()->like('o.title', ':term'),
                 $qb->expr()->like('o.company', ':term'),
                 $qb->expr()->like('o.skills', ':term')
-            ))
-            ->setParameter('term', '%'.$searchTerm.'%');
+            ))->setParameter('term', '%'.$searchTerm.'%');
         }
 
-        // Exécute la requête
-        $offers = $qb->getQuery()->getResult();
+        // Compte total pour pagination
+        $countQb = clone $qb;
+        $countQb->select('COUNT(o.id)');
+        $totalOffers = (int)$countQb->getQuery()->getSingleScalarResult();
 
-        // Rend la vue avec les résultats
+        // Pagination
+        $offers = $qb->setFirstResult($offset)
+                    ->setMaxResults($limit)
+                    ->getQuery()
+                    ->getResult();
+
+        $totalPages = max(1, ceil($totalOffers / $limit));
+
         return $this->view->render($response, 'offres.html.twig', [
             'offers' => $offers,
-            'searchQuery' => $searchTerm
+            'searchQuery' => $searchTerm,
+            'current_page' => $page,
+            'total_pages' => $totalPages,
+            'total_offers' => $totalOffers,
+            'is_search' => !empty($searchTerm)
         ]);
     }
 }

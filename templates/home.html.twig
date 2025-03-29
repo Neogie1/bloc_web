@@ -1,68 +1,62 @@
-
 {% extends "layout.html.twig" %}
 
 {% block content %}
-    <div
-      class="titre d-flex flex-column align-items-center justify-content-center mt-4"
-      id="maintitre"
-    >
-      <h1
-        class="fw-bold text-dark text-center display-4 display-sm-5 display-lg-6"
-      >
+    <div class="titre d-flex flex-column align-items-center justify-content-center mt-4" id="maintitre">
+      <h1 class="fw-bold text-dark text-center display-4 display-sm-5 display-lg-6">
         Trouvez votre stage idéal
       </h1>
     </div>
-    <div
-      class="slogan d-flex flex-column align-items-center justify-content-center mt-4"
-    >
-      <p
-        class="lead text-center mx-auto fw-normal"
-        style="max-width: 40rem; color: #6b7280"
-      >
+    <div class="slogan d-flex flex-column align-items-center justify-content-center mt-4">
+      <p class="lead text-center mx-auto fw-normal" style="max-width: 40rem; color: #6b7280">
         Découvrez et postulez à des milliers d'opportunités de stage auprès des
         meilleures entreprises du monde entier.
       </p>
     </div>
 
     <div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <form method="GET" action="{{ url_for('searchOffers') }}" class="search-container">
-        <input
-          type="text"
-          name="q"
-          class="form-control search-input"
-          placeholder="Recherchez un stage par titre, entreprise ou compétences..."
-          value="{{ app.request.get('q') }}"
-        />
-          <i class="fas fa-search search-icon"></i>
-        </button>
-      </form>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <form id="searchForm" method="GET" action="{{ url_for('searchOffers') }}" class="search-container">
+            <input
+              type="text"
+              name="q"
+              id="searchInput"
+              class="form-control search-input"
+              placeholder="Recherchez un stage par titre, entreprise ou compétences..."
+              value="{{ app.request.get('q') }}"
+            />
+            <i class="fas fa-search search-icon"></i>
+          </form>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+
     <div class="keywords d-flex flex-wrap justify-content-center gap-2 mt-3">
-      <button
-        class="btn btn-light btn-outline-light px-4 py-1 rounded-pill text-sm text-gray-600 hover:bg-primary hover:text-primary transition-colors"
-      >
-        Cybersécurité
-      </button>
-      <button
-        class="btn btn-light btn-outline-light px-4 py-1 rounded-pill text-sm text-gray-600 hover:bg-primary hover:text-primary transition-colors"
-      >
-        Design
-      </button>
-      <button
-        class="btn btn-light btn-outline-light px-4 py-1 rounded-pill text-sm text-gray-600 hover:bg-primary hover:text-primary transition-colors"
-      >
-        Marketing Digital
-      </button>
-      <button
-        class="btn btn-light btn-outline-light px-4 py-1 rounded-pill text-sm text-gray-600 hover:bg-primary hover:text-primary transition-colors"
-      >
-        Réseaux
-      </button>
+      {% for keyword in ['Cybersécurité', 'Design', 'Marketing Digital', 'Réseaux'] %}
+        <button
+          type="button"
+          class="btn btn-light btn-outline-light px-4 py-1 rounded-pill text-sm text-gray-600 hover:bg-primary hover:text-primary transition-colors keyword-btn"
+          data-keyword="{{ keyword }}"
+        >
+          {{ keyword }}
+        </button>
+      {% endfor %}
     </div>
+
+    <script>
+      // Gestion des clics sur les boutons mots-clés
+      document.querySelectorAll('.keyword-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const keyword = this.getAttribute('data-keyword');
+          
+          // 1. Remplir le champ de recherche
+          document.getElementById('searchInput').value = keyword;
+          
+          // 2. Soumettre le formulaire
+          document.getElementById('searchForm').submit();
+        });
+      });
+    </script>
     <div class="description-container">
       <div class="content-container">
         <!-- Premier bloc -->
