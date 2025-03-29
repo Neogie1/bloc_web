@@ -1,0 +1,15 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <div class="container my-5">
+        <h1>Bienvenue sur votre tableau de bord</h1>
+        <div class="alert alert-success">
+            Connecté en tant que <strong>{{ session.get('user').email }}</strong> ({{ session.get('user').role }})
+        </div>
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button type="submit" class="btn btn-danger">Déconnexion</button>
+        </form>
+    </div></br></br></br></br></br></br></br></br></br></br></br>
+{% include 'footer.html.twig' %}
+{% endblock %}
+

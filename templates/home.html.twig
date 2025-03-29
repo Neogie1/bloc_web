@@ -25,19 +25,22 @@
     </div>
 
     <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-6">
-          <div class="search-container">
-            <input
-              type="text"
-              class="form-control search-input"
-              placeholder="Recherchez un stage par titre, entreprise ou compétences..."
-            />
-            <i class="fas fa-search search-icon"></i>
-          </div>
-        </div>
-      </div>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form method="GET" action="{{ url_for('searchOffers') }}" class="search-container">
+        <input
+          type="text"
+          name="q"
+          class="form-control search-input"
+          placeholder="Recherchez un stage par titre, entreprise ou compétences..."
+          value="{{ app.request.get('q') }}"
+        />
+          <i class="fas fa-search search-icon"></i>
+        </button>
+      </form>
     </div>
+  </div>
+</div>
     <div class="keywords d-flex flex-wrap justify-content-center gap-2 mt-3">
       <button
         class="btn btn-light btn-outline-light px-4 py-1 rounded-pill text-sm text-gray-600 hover:bg-primary hover:text-primary transition-colors"
@@ -325,5 +328,5 @@
             </button>
           </div>
         </div>
-
+{% include 'footer.html.twig' %}
 {% endblock %}

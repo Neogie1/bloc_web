@@ -487,3 +487,28 @@ hr {
     margin-bottom: 20px;
   }
 }
+
+.job-description-box {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  height: 100%;
+}
+
+.job-description-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  border-color: #d1d5db;
+}
+
+.btn-hover {
+  transition: all 0.2s ease;
+}
+
+.btn-hover:hover {
+  background-color: rgba(139, 92, 246, 0.2) !important;
+  transform: translateY(-1px);
+}

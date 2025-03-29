@@ -6,11 +6,31 @@
     "doctrine/orm": "^3.3",
     "doctrine/dbal": "4.0",
     "symfony/cache": "^6.4",
-    "uma/dic": "^3.0"
+    "uma/dic": "^3.0",
+    "bryanjhv/slim-session": "~4.0",
+    "slim/csrf": "^1.5",
+    "php-di/php-di": "^7.0",
+    "php-di/slim-bridge": "^3.4"
   },
   "autoload": {
     "psr-4": {
       "App\\": "src/"
     }
+  },
+  "scripts": {
+    "update-db": [
+      "php -r \"require 'vendor/autoload.php'; $em = require 'bootstrap.php'; (new Doctrine\\ORM\\Tools\\SchemaTool($em))->updateSchema($em->getMetadataFactory()->getAllMetadata()); echo 'Database schema updated!';\""
+    ],
+    "clear-cache": [
+      "php -r \"require 'vendor/autoload.php'; $em = require 'bootstrap.php'; $em->getCache()->clear(); echo 'Cache cleared!';\""
+    ],
+    "check-mappings": [
+      "php -r \"require 'vendor/autoload.php'; $em = require 'bootstrap.php'; $em->getMetadataFactory()->getAllMetadata(); echo 'Mappings are valid!';\""
+    ]
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "classmap-authoritative": true,
+    "apcu-autoloader": true
   }
 }

@@ -1,51 +1,42 @@
 {% extends "layout.html.twig" %}
 
 {% block content %}
-    <div class="login-container">
-      <div
-        class="login-body d-md-flex align-items-center justify-content-center"
-      >
-        <div
-          class="login-box d-flex flex-column h-100 align-items-center justify-content-center"
-        >
-          <div class="mt-5 text-center">
-            <h3 class="login-title">Se connecter</h3>
-            <form class="login-form w-100" method="POST" action="">
-              <div class="mb-3">
-                <label for="email" class="form-label">Adresse e-mail</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="email"
-                  name="email"
-                  placeholder="example@example.com"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="password" class="form-label">Mot de passe</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password"
-                  name="password"
-                  placeholder="Mot de passe"
-                  required
-                />
-              </div>
-              <button type="submit" class="btn btn-primary w-100">
-                Se connecter
-              </button>
-            </form>
+<div class="login-container">
+  <div class="login-body d-md-flex align-items-center justify-content-center">
+    <div class="login-box d-flex flex-column h-100 align-items-center justify-content-center">
+      <div class="mt-5 text-center">
+        <h3 class="login-title">Se connecter</h3>
+        
+        {% if session.get('login_error') %}
+          <div class="alert alert-danger mb-3">
+            {{ session.get('login_error') }}
+            {{ session.delete('login_error') }}
           </div>
-          <div class="mt-auto text-center">
-            <p class="login-footer text-muted mb-0 mt-md-0 mt-4">
-              Vous n'avez pas de compte ?<br />
-              <a href="#" class="signup-link">Inscrivez-vous</a>
-            </p>
+        {% endif %}
+
+        <form class="login-form w-100" method="POST" action="{{ url_for('loginUser') }}">
+          <div class="mb-3">
+            <label for="email" class="form-label">Adresse e-mail</label>
+            <input type="email" class="form-control" id="email" name="email" 
+                   placeholder="example@example.com" required>
           </div>
-        </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input type="password" class="form-control" id="password" name="password" 
+                   placeholder="Mot de passe" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">
+            Se connecter
+          </button>
+        </form>
+      </div>
+      <div class="mt-auto text-center">
+        <p class="login-footer text-muted mb-0 mt-md-0 mt-4">
+          Vous n'avez pas de compte ?<br>
+          <a href="#" class="signup-link">Inscrivez-vous</a>
+        </p>
       </div>
     </div>
-
+  </div>
+</div>
 {% endblock %}
