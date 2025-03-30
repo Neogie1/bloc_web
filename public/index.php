@@ -85,9 +85,12 @@ $container->set(AuthMiddleware::class, function (Container $c) {
     return new AuthMiddleware($c->get('session'));
 });
 
+
 // ==================================================
 // ROUTES
 // ==================================================
+
+
 
 // Enregistrement du contrôleur EntrepriseController
 $container->set(EntrepriseController::class, function (Container $c) {
@@ -112,6 +115,9 @@ $app->group('/entreprises', function ($group) {
     
     // Évaluation (tous utilisateurs)
     $group->post('/{id}/evaluate', [EntrepriseController::class, 'evaluate'])->setName('entreprises.evaluate');
+
+    //Supprimer une entreprises : 
+    $group->post('/{id}/delete', [EntrepriseController::class, 'delete'])->setName('entreprises.delete');
     
     // Statistiques
     $group->get('/{id}/stats', [EntrepriseController::class, 'stats'])->setName('entreprises.stats');

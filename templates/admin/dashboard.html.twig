@@ -1,7 +1,6 @@
 {% extends "layout.html.twig" %}
 
 {% block content %}
-<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -40,6 +39,11 @@
                            class="list-group-item list-group-item-action">
                            <i class="fas fa-cog me-2"></i> Paramètres
                         </a>
+                                    <form action="{{ url_for('logout') }}" method="POST" class="list-group-item">
+                <button type="submit" class="btn btn-danger w-100">
+                    <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
+                </button>
+            </form>
                     </div>
                 </div>
             </div>

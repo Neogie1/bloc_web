@@ -58,8 +58,14 @@
                                                title="Modifier">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
+                                            
+                                            <form method="POST" action="{{ url_for('entreprises.delete', {'id': entreprise.id}) }}" style="display:inline;">
+        <button type="submit" class="btn btn-sm btn-danger" 
+                onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ entreprise.nom }} ?')">
+            <i class="bi bi-trash"></i>
+        </button>
+    </form>
                                         {% endif %}
-                                        
                                         <button class="btn btn-sm btn-success evaluate-btn" 
                                                 data-id="{{ entreprise.id }}"
                                                 title="Évaluer">
@@ -109,6 +115,28 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de confirmation de suppression -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmation de suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer l'entreprise "<span id="entrepriseName"></span>" ?</p>
+                <p class="text-danger">Cette action est irréversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <form id="deleteForm" method="POST">
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -139,6 +167,16 @@ $(document).ready(function() {
         const entrepriseId = $(this).data('id');
         $('#evaluateForm').attr('action', `/entreprises/${entrepriseId}/evaluate`);
         $('#evaluateModal').modal('show');
+    });
+
+    // Gestion du modal de suppression
+    $('.delete-btn').click(function() {
+        const entrepriseId = $(this).data('id');
+        const entrepriseName = $(this).data('name');
+        
+        $('#entrepriseName').text(entrepriseName);
+        $('#deleteForm').attr('action', `/entreprises/${entrepriseId}/delete`);
+        $('#deleteModal').modal('show');
     });
 });
 </script>

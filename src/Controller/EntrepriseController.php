@@ -13,6 +13,51 @@ class EntrepriseController
     private $view;
     private $session;
 
+    public function delete(Request $request, Response $response, array $args): Response
+    {
+        $user = $this->session->get('user');
+        
+        // Vérification des permissions
+        if (!in_array($user['role'], [User::ROLE_ADMIN, User::ROLE_PILOTE])) {
+            $this->session->set('flash', [
+                'type' => 'error',
+                'message' => 'Vous n\'avez pas les droits pour effectuer cette action'
+            ]);
+            return $response->withHeader('Location', '/entreprises')
+                           ->withStatus(403);
+        }
+
+        $id = (int)$args['id'];
+        $entreprise = $this->entityManager->getRepository(Entreprise::class)->find($id);
+
+        if (!$entreprise) {
+            $this->session->set('flash', [
+                'type' => 'error',
+                'message' => 'Entreprise non trouvée'
+            ]);
+            return $response->withHeader('Location', '/entreprises')
+                           ->withStatus(404);
+        }
+
+        try {
+            $this->entityManager->remove($entreprise);
+            $this->entityManager->flush();
+            
+            $this->session->set('flash', [
+                'type' => 'success',
+                'message' => 'Entreprise supprimée avec succès'
+            ]);
+        } catch (\Exception $e) {
+            $this->session->set('flash', [
+                'type' => 'error',
+                'message' => 'Erreur lors de la suppression de l\'entreprise'
+            ]);
+        }
+
+        return $response->withHeader('Location', '/entreprises')
+                       ->withStatus(302);
+    }
+
     public function __construct(EntityManagerInterface $entityManager, $view, $session)
     {
         $this->entityManager = $entityManager;
@@ -113,14 +158,60 @@ class EntrepriseController
                        ->withStatus(302);
     }
 
+    
     public function editForm(Request $request, Response $response, array $args): Response
     {
-        // Implémentez cette méthode
+        $user = $this->session->get('user');
+        $id = (int)$args['id'];
+        
+        // Vérification des permissions
+        if (!in_array($user['role'], ['admin', 'pilote'])) {
+            return $response->withHeader('Location', '/entreprises')->withStatus(403);
+        }
+    
+        // Récupération de l'entreprise
+        $entreprise = $this->entityManager->getRepository(Entreprise::class)->find($id);
+        
+        if (!$entreprise) {
+            return $response->withHeader('Location', '/entreprises')->withStatus(404);
+        }
+    
+        // Rendu du formulaire
+        return $this->view->render($response, 'admin/entreprises/edit.html.twig', [
+            'entreprise' => $entreprise,
+            'user_role' => $user['role']
+        ]);
     }
 
     public function edit(Request $request, Response $response, array $args): Response
     {
-        // Implémentez cette méthode
+        $id = (int)$args['id'];
+        $entityManager = $this->entityManager;
+        $entreprise = $entityManager->getRepository(Entreprise::class)->find($id);
+    
+        if (!$entreprise) {
+            throw new HttpNotFoundException($request, "Entreprise non trouvée");
+        }
+    
+        if ($request->getMethod() === 'POST') {
+            // Traitement du formulaire
+            $data = $request->getParsedBody();
+            
+            // Valider et mettre à jour l'entreprise
+            $entreprise->setNom($data['nom']);
+            // autres champs...
+    
+            $entityManager->flush();
+    
+            // Redirection après succès
+            return $response->withHeader('Location', '/entreprises/' . $id)
+                           ->withStatus(302);
+        }
+    
+        // Affichage du formulaire
+        return $this->view->render($response, 'entreprise/edit.html.twig', [
+            'entreprise' => $entreprise,
+        ]);
     }
 
     public function evaluate(Request $request, Response $response, array $args): Response
