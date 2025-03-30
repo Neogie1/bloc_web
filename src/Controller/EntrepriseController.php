@@ -144,6 +144,8 @@ class EntrepriseController
         $entreprise->setSecteur($data['secteur'] ?? null);
         $entreprise->setVille($data['ville'] ?? null);
         $entreprise->setPays($data['pays'] ?? null);
+        $entreprise->setEmail($data['email'] ?? null);
+        $entreprise->setTelephone($data['telephone'] ?? null);
         
         $this->entityManager->persist($entreprise);
         $this->entityManager->flush();

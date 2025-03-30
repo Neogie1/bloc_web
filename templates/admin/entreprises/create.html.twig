@@ -22,7 +22,7 @@
                     <form method="POST" action="{{ url_for('entreprises.create') }}" id="entrepriseForm">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Nom</label>
+                                <label class="form-label">Nom*</label>
                                 <input type="text" name="nom" class="form-control {% if errors.nom is defined %}is-invalid{% endif %}" 
                                        value="{{ old_input.nom|default('') }}" required>
                                 {% if errors.nom is defined %}
@@ -30,7 +30,7 @@
                                 {% endif %}
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Secteur d'activité</label>
+                                <label class="form-label">Secteur d'activité*</label>
                                 <input type="text" name="secteur" class="form-control {% if errors.secteur is defined %}is-invalid{% endif %}" 
                                        value="{{ old_input.secteur|default('') }}" required>
                                 {% if errors.secteur is defined %}
@@ -41,7 +41,29 @@
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Ville</label>
+                                <label class="form-label">Email*</label>
+                                <input type="email" name="email" class="form-control {% if errors.email is defined %}is-invalid{% endif %}" 
+                                       value="{{ old_input.email|default('') }}" required>
+                                {% if errors.email is defined %}
+                                    <div class="invalid-feedback">{{ errors.email }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Téléphone</label>
+                                <input type="tel" name="telephone" class="form-control {% if errors.telephone is defined %}is-invalid{% endif %}" 
+                                       value="{{ old_input.telephone|default('') }}"
+                                       pattern="[0-9]{10}" 
+                                       placeholder="Format: 0612345678">
+                                {% if errors.telephone is defined %}
+                                    <div class="invalid-feedback">{{ errors.telephone }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">Format: 10 chiffres (ex: 0612345678)</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ville*</label>
                                 <input type="text" name="ville" class="form-control {% if errors.ville is defined %}is-invalid{% endif %}" 
                                        value="{{ old_input.ville|default('') }}" required>
                                 {% if errors.ville is defined %}
@@ -49,7 +71,7 @@
                                 {% endif %}
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Pays</label>
+                                <label class="form-label">Pays*</label>
                                 <input type="text" name="pays" class="form-control {% if errors.pays is defined %}is-invalid{% endif %}" 
                                        value="{{ old_input.pays|default('') }}" required>
                                 {% if errors.pays is defined %}
@@ -120,6 +142,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (value && !value.startsWith('www.')) {
             this.value = 'www.' + value;
         }
+    });
+
+    // Validation du téléphone
+    const telephoneInput = document.querySelector('input[name="telephone"]');
+    telephoneInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
     });
 });
 </script>
