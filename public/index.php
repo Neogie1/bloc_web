@@ -117,7 +117,7 @@ $app->group('/entreprises', function ($group) {
     $group->post('/{id}/evaluate', [EntrepriseController::class, 'evaluate'])->setName('entreprises.evaluate');
 
     //Supprimer une entreprises : 
-    $group->post('/{id}/delete', [EntrepriseController::class, 'delete'])->setName('entreprises.delete');
+    $group->delete('/{id}/delete', [EntrepriseController::class, 'delete'])->setName('entreprises.delete');
     
     // Statistiques
     $group->get('/{id}/stats', [EntrepriseController::class, 'stats'])->setName('entreprises.stats');
