@@ -1,0 +1,145 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+</br>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            {% include 'admin/_menu.html.twig' %}
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2><i class="bi bi-building me-2"></i> Gestion des entreprises</h2>
+                    {% if user_role in ['admin', 'pilote'] %}
+                        <a href="{{ url_for('entreprises.create.form') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Ajouter
+                        </a>
+                    {% endif %}
+                </div>
+                
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Secteur</th>
+                                    <th>Localisation</th>
+                                    <th>Note moyenne</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entreprise in entreprises %}
+                                <tr>
+                                    <td>{{ entreprise.nom }}</td>
+                                    <td>{{ entreprise.secteur }}</td>
+                                    <td>{{ entreprise.ville }}, {{ entreprise.pays }}</td>
+                                    <td>
+                                        <div class="rating">
+                                            {% for i in 1..5 %}
+                                                <i class="bi bi-star-fill {{ i <= entreprise.moyenne ? 'text-warning' : 'text-secondary' }}"></i>
+                                            {% endfor %}
+                                            <span class="ms-2">{{ entreprise.moyenne|number_format(1) }}/5</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('entreprises.stats', {'id': entreprise.id}) }}" 
+                                           class="btn btn-sm btn-info"
+                                           title="Statistiques">
+                                            <i class="bi bi-graph-up"></i>
+                                        </a>
+                                        
+                                        {% if user_role in ['admin', 'pilote'] %}
+                                            <a href="{{ url_for('entreprises.edit.form', {'id': entreprise.id}) }}" 
+                                               class="btn btn-sm btn-primary"
+                                               title="Modifier">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        {% endif %}
+                                        
+                                        <button class="btn btn-sm btn-success evaluate-btn" 
+                                                data-id="{{ entreprise.id }}"
+                                                title="Évaluer">
+                                            <i class="bi bi-star"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal d'évaluation -->
+<div class="modal fade" id="evaluateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Évaluer cette entreprise</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="evaluateForm" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Note (1-5)</label>
+                        <div class="rating-input">
+                            {% for i in 1..5 %}
+                                <i class="bi bi-star rating-star" data-value="{{ i }}"></i>
+                            {% endfor %}
+                            <input type="hidden" name="note" id="noteValue" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Commentaire</label>
+                        <textarea name="commentaire" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Gestion des étoiles dans le modal
+    $('.rating-star').hover(function() {
+        const value = $(this).data('value');
+        $(this).prevAll('.rating-star').addBack().removeClass('bi-star').addClass('bi-star-fill text-warning');
+        $(this).nextAll('.rating-star').removeClass('bi-star-fill text-warning').addClass('bi-star');
+    });
+
+    $('.rating-input').mouseleave(function() {
+        const currentValue = $('#noteValue').val();
+        $('.rating-star').removeClass('bi-star-fill text-warning').addClass('bi-star');
+        if (currentValue) {
+            $(`.rating-star[data-value="${currentValue}"]`).prevAll('.rating-star').addBack()
+                .removeClass('bi-star').addClass('bi-star-fill text-warning');
+        }
+    });
+
+    $('.rating-star').click(function() {
+        $('#noteValue').val($(this).data('value'));
+    });
+
+    // Gestion du modal d'évaluation
+    $('.evaluate-btn').click(function() {
+        const entrepriseId = $(this).data('id');
+        $('#evaluateForm').attr('action', `/entreprises/${entrepriseId}/evaluate`);
+        $('#evaluateModal').modal('show');
+    });
+});
+</script>
+{% endblock %}

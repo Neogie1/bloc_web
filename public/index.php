@@ -12,7 +12,8 @@ use SlimSession\Helper as SessionHelper;
 use Slim\Middleware\Session;
 use DI\Container;
 use App\Controller\OfferController;
-use App\Domain\User;  // ou le bon namespace selon votre structure
+use App\Domain\User;
+use App\Controller\EntrepriseController;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -87,6 +88,35 @@ $container->set(AuthMiddleware::class, function (Container $c) {
 // ==================================================
 // ROUTES
 // ==================================================
+
+// Enregistrement du contrôleur EntrepriseController
+$container->set(EntrepriseController::class, function (Container $c) {
+    return new EntrepriseController(
+        $c->get(EntityManagerInterface::class),
+        $c->get('view'),
+        $c->get('session')
+    );
+});
+
+// Routes pour les entreprises
+$app->group('/entreprises', function ($group) {
+    $group->get('', [EntrepriseController::class, 'list'])->setName('entreprises.list');
+    
+    // Création (admin et pilote seulement)
+    $group->get('/create', [EntrepriseController::class, 'createForm'])->setName('entreprises.create.form');
+    $group->post('/create', [EntrepriseController::class, 'create'])->setName('entreprises.create');
+    
+    // Édition (admin et pilote seulement)
+    $group->get('/{id}/edit', [EntrepriseController::class, 'editForm'])->setName('entreprises.edit.form');
+    $group->post('/{id}/edit', [EntrepriseController::class, 'edit'])->setName('entreprises.edit');
+    
+    // Évaluation (tous utilisateurs)
+    $group->post('/{id}/evaluate', [EntrepriseController::class, 'evaluate'])->setName('entreprises.evaluate');
+    
+    // Statistiques
+    $group->get('/{id}/stats', [EntrepriseController::class, 'stats'])->setName('entreprises.stats');
+})->add($app->getContainer()->get(AuthMiddleware::class));
+
 
 // Routes publiques
 $app->get('/offres', [OfferController::class, 'search'])->setName('searchOffers');

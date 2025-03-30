@@ -1,0 +1,21 @@
+<div class="card mb-4">
+    <div class="card-header" style="background-color: #F8F8FF; color: #333;">
+        <i class="fas fa-bars me-2"></i> Menu Admin
+    </div>
+    <div class="list-group list-group-flush">
+        <a href="{{ url_for('admin.dashboard') }}" 
+           class="list-group-item list-group-item-action">
+           <i class="fas fa-tachometer-alt me-2"></i> Tableau de bord
+        </a>
+        <a href="{{ url_for('entreprises.list') }}" 
+           class="list-group-item list-group-item-action">
+           <i class="bi bi-building me-2"></i> Entreprises
+        </a>
+        <a href="#" class="list-group-item list-group-item-action">
+           <i class="fas fa-users me-2"></i> Utilisateurs
+        </a>
+        <a href="#" class="list-group-item list-group-item-action">
+           <i class="fas fa-cog me-2"></i> Paramètres
+        </a>
+    </div>
+</div>
