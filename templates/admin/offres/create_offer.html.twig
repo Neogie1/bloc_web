@@ -1,0 +1,105 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-briefcase me-2"></i>Déposer une offre de stage</h4>
+                </div>
+                <div class="card-body">
+                    {% if flash %}
+                        <div class="alert alert-{{ flash.type }} alert-dismissible fade show">
+                            {{ flash.message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" action="{{ url_for('offers.create') }}">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Titre de l'offre *</label>
+                            <input type="text" class="form-control {% if errors.title %}is-invalid{% endif %}" 
+                                id="title" name="title" value="{{ old_input.title }}" required>
+                            {% if errors.title %}
+                                <div class="invalid-feedback">{{ errors.title }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="company" class="form-label">Entreprise *</label>
+                            <input type="text" class="form-control {% if errors.company %}is-invalid{% endif %}" 
+                                id="company" name="company" value="{{ old_input.company }}" required>
+                            {% if errors.company %}
+                                <div class="invalid-feedback">{{ errors.company }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description du stage *</label>
+                            <textarea class="form-control {% if errors.description %}is-invalid{% endif %}" 
+                                id="description" name="description" rows="5" required>{{ old_input.description }}</textarea>
+                            {% if errors.description %}
+                                <div class="invalid-feedback">{{ errors.description }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="skills" class="form-label">Compétences requises *</label>
+                                <input type="text" class="form-control {% if errors.skills %}is-invalid{% endif %}" 
+                                    id="skills" name="skills" value="{{ old_input.skills }}" 
+                                    placeholder="Ex: PHP, JavaScript, SQL" required>
+                                {% if errors.skills %}
+                                    <div class="invalid-feedback">{{ errors.skills }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="location" class="form-label">Lieu *</label>
+                                <input type="text" class="form-control {% if errors.location %}is-invalid{% endif %}" 
+                                    id="location" name="location" value="{{ old_input.location }}" required>
+                                {% if errors.location %}
+                                    <div class="invalid-feedback">{{ errors.location }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="salary" class="form-label">Rémunération *</label>
+                                <input type="text" class="form-control {% if errors.salary %}is-invalid{% endif %}" 
+                                    id="salary" name="salary" value="{{ old_input.salary }}" 
+                                    placeholder="Ex: 600€/mois" required>
+                                {% if errors.salary %}
+                                    <div class="invalid-feedback">{{ errors.salary }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="contractType" class="form-label">Type de contrat *</label>
+                                <select class="form-select {% if errors.contractType %}is-invalid{% endif %}" 
+                                    id="contractType" name="contractType" required>
+                                    <option value="" disabled {% if not old_input.contractType %}selected{% endif %}>Sélectionner...</option>
+                                    <option value="Stage" {% if old_input.contractType == 'Stage' %}selected{% endif %}>Stage</option>
+                                    <option value="Alternance" {% if old_input.contractType == 'Alternance' %}selected{% endif %}>Alternance</option>
+                                    <option value="CDD" {% if old_input.contractType == 'CDD' %}selected{% endif %}>CDD</option>
+                                    <option value="CDI" {% if old_input.contractType == 'CDI' %}selected{% endif %}>CDI</option>
+                                </select>
+                                {% if errors.contractType %}
+                                    <div class="invalid-feedback">{{ errors.contractType }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{{ url_for('listOffers') }}" class="btn btn-outline-secondary me-md-2">Annuler</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-2"></i>Publier l'offre
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

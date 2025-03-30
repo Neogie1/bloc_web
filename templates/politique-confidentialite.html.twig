@@ -1,0 +1,183 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Politique de Confidentialité - Internnect{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .legal-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 3rem 2.5rem;
+        background: white;
+        box-shadow: 0 2px 25px rgba(0,0,0,0.08);
+        border-radius: 12px;
+        line-height: 1.7;
+        text-align: center;
+    }
+    
+    .legal-header {
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid #6b5cf6;
+    }
+    
+    .legal-header h1 {
+        color: #6b5cf6;
+        font-weight: 600;
+        font-size: 2.2rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .last-update {
+        font-style: italic;
+        color: #666;
+        font-size: 0.95rem;
+    }
+    
+    .legal-section {
+        margin-bottom: 2.5rem;
+        text-align: center;
+    }
+    
+    .legal-section h2 {
+        color: #8b5cf6;
+        font-size: 1.5rem;
+        margin: 2rem 0 1.2rem 0;
+        font-weight: 500;
+    }
+    
+    .legal-section ul {
+        display: inline-block;
+        text-align: left;
+        padding-left: 1.8rem;
+        margin: 1.2rem auto;
+        max-width: 700px;
+    }
+    
+    .legal-section li {
+        margin-bottom: 0.8rem;
+        position: relative;
+        line-height: 1.8;
+    }
+    
+    .legal-section li:before {
+        content: "•";
+        color: #6b5cf6;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+    }
+    
+    .contact-link {
+        text-align: center;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+    }
+    
+    .contact-link a {
+        color: #6b5cf6;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.2s;
+        font-size: 1.1rem;
+    }
+    
+    .contact-link a:hover {
+        color: #5a4bd1;
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .legal-container {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+            box-shadow: none;
+            border-radius: 0;
+        }
+        
+        .legal-header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .legal-section h2 {
+            font-size: 1.3rem;
+        }
+        
+        .legal-section ul {
+            padding-left: 1.2rem;
+            text-align: left;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="legal-container">
+    <div class="legal-header">
+        <h1>Politique de Confidentialité</h1>
+        <p class="last-update">Dernière mise à jour : Janvier 2025</p>
+    </div>
+
+    <div class="legal-section">
+        <h2>1. Collecte des Informations</h2>
+        <p>Nous recueillons les données suivantes :</p>
+        <ul>
+            <li><strong>Étudiants</strong> : Nom, prénom, email, CV, compétences et historique des candidatures</li>
+            <li><strong>Entreprises</strong> : Raison sociale, secteur, coordonnées et offres publiées</li>
+            <li><strong>Tous utilisateurs</strong> : Données de connexion et cookies nécessaires</li>
+        </ul>
+    </div>
+
+    <div class="legal-section">
+        <h2>2. Utilisation des Données</h2>
+        <p>Vos données servent exclusivement à :</p>
+        <ul>
+            <li>Faciliter la mise en relation étudiants-entreprises</li>
+            <li>Personnaliser votre expérience utilisateur</li>
+            <li>Améliorer nos services par analyses agrégées</li>
+            <li>Envoyer des notifications relatives aux stages</li>
+        </ul>
+    </div>
+
+    <div class="legal-section">
+        <h2>3. Protection des Données</h2>
+        <p>Nous mettons en œuvre :</p>
+        <ul>
+            <li>Chiffrement avancé (BCrypt) des mots de passe</li>
+            <li>Sauvegardes quotidiennes cryptées</li>
+            <li>Accès restreint au personnel autorisé</li>
+            <li>Hébergement sécurisé en France</li>
+        </ul>
+    </div>
+
+    <div class="legal-section">
+        <h2>4. Durée de Conservation</h2>
+        <p>Conformément au RGPD :</p>
+        <ul>
+            <li>Comptes utilisateurs : 3 ans après dernière connexion</li>
+            <li>Candidatures : 1 an après fin du stage</li>
+            <li>Documents : 6 mois après suppression de compte</li>
+        </ul>
+    </div>
+
+    <div class="legal-section">
+        <h2>5. Vos Droits</h2>
+        <p>Vous disposez des droits suivants :</p>
+        <ul>
+            <li>Accès et rectification de vos données</li>
+            <li>Suppression et portabilité des informations</li>
+            <li>Opposition au traitement sous conditions</li>
+        </ul>
+        
+        <div class="contact-link">
+            <p>Pour exercer vos droits :<br>
+            <a href="mailto:john.aziz@viacesi.fr">john.aziz@viacesi.fr</a></p>
+        </div>
+    </div>
+</div>
+</br>
+{% include 'footer.html.twig' %}
+{% endblock %}

@@ -90,7 +90,14 @@ $container->set(AuthMiddleware::class, function (Container $c) {
 // ROUTES
 // ==================================================
 
+// Routes pour les pages légales
+$app->get('/politique-confidentialite', function ($request, $response) {
+    return $this->get('view')->render($response, 'politique-confidentialite.html.twig');
+})->setName('politique_confidentialite');
 
+$app->get('/conditions-utilisation', function ($request, $response) {
+    return $this->get('view')->render($response, 'conditions-utilisation.html.twig');
+})->setName('conditions_utilisation');
 
 // Enregistrement du contrôleur EntrepriseController
 $container->set(EntrepriseController::class, function (Container $c) {

@@ -1,0 +1,201 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Conditions d'Utilisation - Internnect{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .legal-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 3rem 2.5rem;
+        background: white;
+        box-shadow: 0 2px 25px rgba(0,0,0,0.08);
+        border-radius: 12px;
+        line-height: 1.7;
+        text-align: center;
+    }
+    
+    .legal-header {
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid #6b5cf6;
+    }
+    
+    .legal-header h1 {
+        color: #6b5cf6;
+        font-weight: 600;
+        font-size: 2.2rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .effective-date {
+        font-style: italic;
+        color: #666;
+        font-size: 0.95rem;
+    }
+    
+    .legal-section {
+        margin-bottom: 2.5rem;
+        text-align: center;
+    }
+    
+    .legal-section h2 {
+        color: #8b5cf6;
+        font-size: 1.5rem;
+        margin: 2rem 0 1.2rem 0;
+        font-weight: 500;
+    }
+    
+    .legal-section ul {
+        display: inline-block;
+        text-align: left;
+        padding-left: 1.8rem;
+        margin: 1.2rem auto;
+        max-width: 700px;
+    }
+    
+    .legal-section li {
+        margin-bottom: 0.8rem;
+        position: relative;
+        line-height: 1.8;
+    }
+    
+    .legal-section li:before {
+        content: "•";
+        color: #6b5cf6;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+    }
+    
+    .highlight-box {
+        background-color: #f8f9fa;
+        border-left: 4px solid #6b5cf6;
+        padding: 1.5rem;
+        margin: 2rem auto;
+        border-radius: 0 8px 8px 0;
+        max-width: 700px;
+        text-align: left;
+    }
+    
+    .contact-link {
+        text-align: center;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #eee;
+    }
+    
+    .contact-link a {
+        color: #6b5cf6;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.2s;
+        font-size: 1.1rem;
+    }
+    
+    .contact-link a:hover {
+        color: #5a4bd1;
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .legal-container {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+            box-shadow: none;
+            border-radius: 0;
+        }
+        
+        .legal-header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .legal-section h2 {
+            font-size: 1.3rem;
+        }
+        
+        .highlight-box {
+            padding: 1.2rem;
+            margin: 1.5rem 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="legal-container">
+    <div class="legal-header">
+        <h1>Conditions Générales d'Utilisation</h1>
+        <p class="effective-date">En vigueur depuis Janvier 2025</p>
+    </div>
+
+    <div class="legal-section">
+        <h2>1. Acceptation des Conditions</h2>
+        <p>L'utilisation de la plateforme Internnect implique l'acceptation sans réserve des présentes CGU.</p>
+        
+        <div class="highlight-box">
+            <p>En créant un compte ou en utilisant nos services, vous reconnaissez avoir lu, compris et accepté l'intégralité de ces conditions.</p>
+        </div>
+    </div>
+
+    <div class="legal-section">
+        <h2>2. Engagements des Utilisateurs</h2>
+        <p>Vous vous engagez à :</p>
+        <ul>
+            <li>Fournir des informations exactes et à jour</li>
+            <li>Maintenir la confidentialité de vos identifiants</li>
+            <li>Ne pas créer de faux profils ou usurper des identités</li>
+            <li>Respecter les règles de conduite établies</li>
+        </ul>
+    </div>
+
+    <div class="legal-section">
+        <h2>3. Contenu et Publications</h2>
+        <ul>
+            <li>Les offres doivent correspondre à des stages réels</li>
+            <li>Les CV doivent refléter fidèlement les compétences</li>
+            <li>Tout contenu inapproprié sera immédiatement supprimé</li>
+            <li>Les évaluations doivent être objectives et constructives</li>
+        </ul>
+    </div>
+
+    <div class="legal-section">
+        <h2>4. Responsabilités</h2>
+        <p><strong>Plateforme Internnect</strong> :</p>
+        <ul>
+            <li>Facilite les mises en relation sans garantie de résultat</li>
+            <li>Se réserve le droit de modérer les contenus</li>
+            <li>N'intervient pas dans les négociations directes</li>
+        </ul>
+    </div>
+
+    <div class="legal-section">
+        <h2>5. Sanctions</h2>
+        <p>En cas de non-respect des CGU :</p>
+        <ul>
+            <li>Suspension temporaire ou définitive du compte</li>
+            <li>Suppression immédiate des contenus non conformes</li>
+            <li>Poursuites judiciaires en cas d'infraction grave</li>
+        </ul>
+    </div>
+
+    <div class="legal-section">
+        <h2>6. Dispositions Légales</h2>
+        <p>Conformité aux réglementations :</p>
+        <ul>
+            <li>RGPD et Loi Informatique et Libertés</li>
+            <li>Code du travail relatif aux stages</li>
+            <li>Droit français applicable</li>
+        </ul>
+        
+        <div class="contact-link">
+            <p>Pour toute question :<br>
+            <a href="mailto:john.aziz@viacesi.fr">john.aziz@viacesi.fr</a></p>
+        </div>
+    </div>
+</div>
+</br>
+{% include 'footer.html.twig' %}
+{% endblock %}
