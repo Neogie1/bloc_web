@@ -195,6 +195,8 @@ class UserController
         $userArray = array_map(function($user) {
             return [
                 'id'    => $user->getId(),
+                'nom'   => $user->getNom(),
+                'prenom'=> $user->getPrenom(),
                 'email' => $user->getEmail(),
                 'role'  => $user->getRole(),
             ];

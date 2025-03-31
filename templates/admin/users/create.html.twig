@@ -1,9 +1,83 @@
-<form action="{{ url_for('admin.users.create') }}" method="post">
-    <label for="username">Nom d'utilisateur :</label>
-    <input type="text" id="username" name="username" required>
+{% extends "layout.html.twig" %}
 
-    <label for="email">Email :</label>
-    <input type="email" id="email" name="email" required>
+{% block stylesheets %}
+{% endblock %}
 
-    <button type="submit" class="btn btn-success">Ajouter</button>
-</form>
+{% block content %}
+{{ parent() }}
+    <link rel="stylesheet" href="/assets/style.css">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            {% include 'admin/_menu.html.twig' %}
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="bi bi-person-plus me-2"></i> Ajouter un utilisateur</h2>
+                </div>
+                
+                <div class="card-body">
+                    <form method="POST" action="" id="etudiantForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Prénom*</label>
+                                <input type="text" name="prenom" class="form-control {% if errors.prenom is defined %}is-invalid{% endif %}" 
+                                       value="{{ old_input.prenom|default('') }}" required>
+                                {% if errors.prenom is defined %}
+                                    <div class="invalid-feedback">{{ errors.prenom }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nom*</label>
+                                <input type="text" name="nom" class="form-control {% if errors.nom is defined %}is-invalid{% endif %}" 
+                                       value="{{ old_input.nom|default('') }}" required>
+                                {% if errors.nom is defined %}
+                                    <div class="invalid-feedback">{{ errors.nom }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email*</label>
+                                <input type="email" name="email" class="form-control {% if errors.email is defined %}is-invalid{% endif %}" 
+                                       value="{{ old_input.email|default('') }}" required>
+                                {% if errors.email is defined %}
+                                    <div class="invalid-feedback">{{ errors.email }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Rôle*</label>
+                                <select name="role" class="form-control {% if errors.role is defined %}is-invalid{% endif %}" required>
+                                    <option value="">Sélectionner un rôle</option>
+                                    <option value="admin" {% if old_input.role == 'admin' %}selected{% endif %}>Administrateur</option>
+                                    <option value="pilote" {% if old_input.role == 'pilote' %}selected{% endif %}>Pilote</option>
+                                    <option value="etudiant" {% if old_input.role == 'etudiant' %}selected{% endif %}>Étudiant</option>   
+                                </select>
+                                {% if errors.role is defined %}
+                                    <div class="invalid-feedback">{{ errors.role }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Mot de passe*</label>
+                            <input type="password" name="password" class="form-control {% if errors.password is defined %}is-invalid{% endif %}" required>
+                            {% if errors.password is defined %}
+                                <div class="invalid-feedback">{{ errors.password }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-end">
+                            <a href="#" class="btn btn-secondary me-2">Annuler</a>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

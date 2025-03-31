@@ -39,7 +39,7 @@
         <div class="collapse navbar-collapse">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link mx-3 d-flex align-items-center" href="#">
+              <a class="nav-link mx-3 d-flex align-items-center" href="{{ url_for('home') }}">
                 <i class="bi bi-search" style="font-size: 18px"></i>
                 <span class="ms-2">Rechercher</span>
               </a>
@@ -114,7 +114,7 @@
         </button>
         <div class="collapse navbar-collapse" id="mobileNav">
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link" href="#">Rechercher</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Rechercher</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Favoris</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Entreprises</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Déposer une offre</a></li>

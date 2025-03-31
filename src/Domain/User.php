@@ -30,11 +30,19 @@ final class User
     #[Column(type: 'string', length: 20, nullable: false)]
     private string $role;
 
-    public function __construct(string $email, string $password, string $role = self::ROLE_ETUDIANT)
+    #[Column(type: 'string', length: 255, nullable: false)]
+    private string $nom;
+
+    #[Column(type: 'string', length: 255, nullable: false)]
+    private string $prenom;
+
+    public function __construct(string $email, string $password, string $nom, string $prenom, string $role = self::ROLE_ETUDIANT)
     {
         $this->email = $email;
         $this->setPassword($password);
         $this->setRole($role);
+        $this->nom = $nom;
+        $this->prenom = $prenom;
         $this->registeredAt = new DateTimeImmutable('now');
     }
 
@@ -99,5 +107,25 @@ final class User
             self::ROLE_ETUDIANT => 'Étudiant',
             default => 'Inconnu',
         };
+    }
+
+    public function getNom(): string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): void
+    {
+        $this->nom = $nom;
+    }
+
+    public function getPrenom(): string
+    {
+        return $this->prenom;
+    }
+
+    public function setPrenom(string $prenom): void
+    {
+        $this->prenom = $prenom;
     }
 }
