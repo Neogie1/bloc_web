@@ -28,7 +28,7 @@ $app = AppFactory::create();
 // CONFIGURATION TWIG DANS LE CONTENEUR
 // ==================================================
 $container->set('view', function () {
-    return Twig::create(__DIR__ . '/../templates', ['cache' => false]); // Désactive le cache pour le développement
+    return Twig::create(__DIR__ . '/../templates', ['cache' => false]);
 });
 
 // ==================================================
@@ -69,6 +69,7 @@ $container->set('session', function () {
 $container->set(UserController::class, function (Container $c) {
     return new UserController(
         $c->get(EntityManagerInterface::class),
+        $c->get('view'),
         $c->get('session')
     );
 });
@@ -89,6 +90,32 @@ $container->set(AuthMiddleware::class, function (Container $c) {
 // ==================================================
 // ROUTES
 // ==================================================
+
+$app->group('/admin/users', function ($group) {
+    // Liste des utilisateurs
+    $group->get('', \App\Controller\UserController::class . ':listUsers')
+          ->setName('admin.users.list');
+    
+    // Formulaire de création d'utilisateur (GET)
+    $group->get('/create', \App\Controller\UserController::class . ':createUserForm')
+          ->setName('admin.users.create.form');
+    
+    // Action de création d'utilisateur (POST)
+    $group->post('/create', \App\Controller\UserController::class . ':createUser')
+          ->setName('admin.users.create');
+    
+    // Formulaire d'édition d'utilisateur (GET)
+    $group->get('/edit/{id}', \App\Controller\UserController::class . ':editUserForm')
+          ->setName('admin.users.edit.form');
+    
+    // Action d'édition d'utilisateur (POST)
+    $group->post('/edit/{id}', \App\Controller\UserController::class . ':editUser')
+          ->setName('admin.users.edit');
+    
+    // Action de suppression d'utilisateur (POST)
+    $group->post('/delete/{id}', \App\Controller\UserController::class . ':deleteUser')
+          ->setName('admin.users.delete');
+});
 
 // Routes pour les pages légales
 $app->get('/politique-confidentialite', function ($request, $response) {

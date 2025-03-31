@@ -271,6 +271,7 @@ class ComposerStaticInit026509606a55be5c56c243e48adc6597
         'App\\Domain\\Entreprise' => __DIR__ . '/../..' . '/src/Domain/Entreprise.php',
         'App\\Domain\\Offer' => __DIR__ . '/../..' . '/src/Domain/Offer.php',
         'App\\Domain\\User' => __DIR__ . '/../..' . '/src/Domain/User.php',
+        'App\\Middleware\\AdminMiddleware' => __DIR__ . '/../..' . '/src/Middleware/AdminMiddleware.php',
         'App\\Middleware\\AuthMiddleware' => __DIR__ . '/../..' . '/src/Middleware/AuthMiddleware.php',
         'App\\Service\\UserService' => __DIR__ . '/../..' . '/src/Service/UserService.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',

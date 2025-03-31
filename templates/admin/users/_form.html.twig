@@ -1,0 +1,37 @@
+{# _form.html.twig #}
+{% extends "layout.html.twig" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h2>{{ user.id ? 'Modifier l\'utilisateur' : 'Ajouter un utilisateur' }}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ user.id ? url_for('admin.users.edit', {id: user.id}) : url_for('admin.users.create') }}">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mot de passe</label>
+                            <input type="password" class="form-control" id="password" name="password" {% if not user.id %}required{% endif %}>
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Rôle</label>
+                            <select class="form-select" id="role" name="role">
+                                <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Administrateur</option>
+                                <option value="pilote" {% if user.role == 'pilote' %}selected{% endif %}>Pilote</option>
+                                <option value="etudiant" {% if user.role == 'etudiant' %}selected{% endif %}>Étudiant</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">{{ user.id ? 'Mettre à jour' : 'Créer' }}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

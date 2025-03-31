@@ -2,20 +2,29 @@
 namespace App\Controller;
 
 use App\Domain\User;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use SlimSession\Helper;
+use Slim\Views\Twig;
 
 class UserController
 {
+    private $twig;
     private $entityManager;
     private $session;
 
-    public function __construct(EntityManager $entityManager, Helper $session)
+    public function __construct(EntityManagerInterface $entityManager, Twig $twig, Helper $session)
     {
         $this->entityManager = $entityManager;
+        $this->twig = $twig;
         $this->session = $session;
+    }
+
+    private function getUserRole()
+    {
+        $user = $this->session->get('user');
+        return $user['role'] ?? null;
     }
 
     public function createUser(Request $request, Response $response, $args)
@@ -177,4 +186,102 @@ class UserController
             'registered_at' => $user->getRegisteredAt()->format('Y-m-d H:i:s')
         ]);
     }
+
+    public function listUsers(Request $request, Response $response, $args): Response
+    {
+        $users = $this->entityManager->getRepository(User::class)->findAll();
+
+        // Ici, on transforme les entités en tableaux associatifs si nécessaire
+        $userArray = array_map(function($user) {
+            return [
+                'id'    => $user->getId(),
+                'email' => $user->getEmail(),
+                'role'  => $user->getRole(),
+            ];
+        }, $users);
+
+        return $this->twig->render($response, 'admin/users/list.html.twig', [
+            'users'     => $userArray,
+            'user_role' => $this->session->get('user')['role'] ?? null,
+        ]);
+    }
+
+    public function showCreateForm(Request $request, Response $response, $args)
+    {
+        return $this->twig->render($response, 'admin/users/create.html.twig', [
+            'user_role' => $this->getUserRole()
+        ]);
+    }
+
+    public function showEditForm(Request $request, Response $response, $args)
+    {
+        $userId = (int) $args['id'];
+        $user = $this->entityManager->getRepository(User::class)->find($userId);
+        
+        if (!$user) {
+            $this->session->set('error', 'Utilisateur non trouvé');
+            return $response->withHeader('Location', '/admin/users')->withStatus(302);
+        }
+
+        return $this->twig->render($response, 'admin/users/edit.html.twig', [
+            'user' => $user,
+            'user_role' => $this->getUserRole()
+        ]);
+    }
+
+    public function editUser(Request $request, Response $response, $args)
+{
+    $userId = (int) $args['id'];
+    $user = $this->entityManager->getRepository(User::class)->find($userId);
+    
+    if (!$user) {
+        // Si l'utilisateur n'existe pas, redirection vers la liste des utilisateurs
+        $this->session->set('error', 'Utilisateur non trouvé');
+        return $response->withHeader('Location', '/admin/users')->withStatus(302);
+    }
+
+    $data = $request->getParsedBody();
+    
+    // Validation
+    if (empty($data['email'])) {
+        $this->session->set('error', 'Email est requis');
+        return $response->withHeader('Location', '/admin/users/edit/'.$userId)->withStatus(302);
+    }
+    
+    // Mise à jour des champs
+    $user->setEmail($data['email']);
+    
+    if (!empty($data['password'])) {
+        $user->setPassword($data['password']);
+    }
+    
+    $user->setRole($data['role'] ?? $user->getRole());
+
+    // Sauvegarde dans la base de données
+    $this->entityManager->flush();
+
+    // Redirection avec message de succès
+    $this->session->set('flash', ['type' => 'success', 'message' => 'Utilisateur mis à jour']);
+    return $response->withHeader('Location', '/admin/users')->withStatus(302);
+}
+
+public function deleteUser(Request $request, Response $response, $args)
+{
+    $userId = (int) $args['id'];
+    $user = $this->entityManager->getRepository(User::class)->find($userId);
+    
+    if (!$user) {
+        // Si l'utilisateur n'existe pas, redirection vers la liste des utilisateurs
+        $this->session->set('error', 'Utilisateur non trouvé');
+        return $response->withHeader('Location', '/admin/users')->withStatus(302);
+    }
+
+    // Suppression de l'utilisateur
+    $this->entityManager->remove($user);
+    $this->entityManager->flush();
+
+    // Redirection avec message de succès
+    $this->session->set('flash', ['type' => 'success', 'message' => 'Utilisateur supprimé']);
+    return $response->withHeader('Location', '/admin/users')->withStatus(302);
+}
 }

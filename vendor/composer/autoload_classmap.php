@@ -12,6 +12,7 @@ return array(
     'App\\Domain\\Entreprise' => $baseDir . '/src/Domain/Entreprise.php',
     'App\\Domain\\Offer' => $baseDir . '/src/Domain/Offer.php',
     'App\\Domain\\User' => $baseDir . '/src/Domain/User.php',
+    'App\\Middleware\\AdminMiddleware' => $baseDir . '/src/Middleware/AdminMiddleware.php',
     'App\\Middleware\\AuthMiddleware' => $baseDir . '/src/Middleware/AuthMiddleware.php',
     'App\\Service\\UserService' => $baseDir . '/src/Service/UserService.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
