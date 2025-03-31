@@ -129,11 +129,12 @@
                 <p class="text-danger">Cette action est irréversible.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <form id="deleteForm" method="POST">
-                    <button type="submit" class="btn btn-danger">Supprimer</button>
-                </form>
-            </div>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+    <form method="POST" action="{{ url_for('entreprises.delete', {id: entreprise.id}) }}">
+        <input type="hidden" name="_METHOD" value="DELETE">
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+    </form>
+</div>
         </div>
     </div>
 </div>

@@ -123,8 +123,8 @@ $app->group('/entreprises', function ($group) {
     // Évaluation (tous utilisateurs)
     $group->post('/{id}/evaluate', [EntrepriseController::class, 'evaluate'])->setName('entreprises.evaluate');
 
-    //Supprimer une entreprises : 
-    $group->delete('/{id}/delete', [EntrepriseController::class, 'delete'])->setName('entreprises.delete');
+        // Suppression (modifiée en POST au lieu de DELETE)
+        $group->post('/{id:\d+}/delete', [EntrepriseController::class, 'delete'])->setName('entreprises.delete');
     
     // Statistiques
     $group->get('/{id}/stats', [EntrepriseController::class, 'stats'])->setName('entreprises.stats');
