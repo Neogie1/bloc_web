@@ -160,60 +160,80 @@ class EntrepriseController
                        ->withStatus(302);
     }
 
-    
+
     public function editForm(Request $request, Response $response, array $args): Response
     {
-        $user = $this->session->get('user');
-        $id = (int)$args['id'];
-        
-        // Vérification des permissions
-        if (!in_array($user['role'], ['admin', 'pilote'])) {
-            return $response->withHeader('Location', '/entreprises')->withStatus(403);
-        }
-    
-        // Récupération de l'entreprise
+        $id = (int) $args['id'];
         $entreprise = $this->entityManager->getRepository(Entreprise::class)->find($id);
-        
-        if (!$entreprise) {
-            return $response->withHeader('Location', '/entreprises')->withStatus(404);
-        }
-    
-        // Rendu du formulaire
-        return $this->view->render($response, 'admin/entreprises/edit.html.twig', [
-            'entreprise' => $entreprise,
-            'user_role' => $user['role']
-        ]);
-    }
-
-    public function edit(Request $request, Response $response, array $args): Response
-    {
-        $id = (int)$args['id'];
-        $entityManager = $this->entityManager;
-        $entreprise = $entityManager->getRepository(Entreprise::class)->find($id);
     
         if (!$entreprise) {
             throw new HttpNotFoundException($request, "Entreprise non trouvée");
         }
     
-        if ($request->getMethod() === 'POST') {
-            // Traitement du formulaire
-            $data = $request->getParsedBody();
-            
-            // Valider et mettre à jour l'entreprise
-            $entreprise->setNom($data['nom']);
-            // autres champs...
+        return $this->view->render($response, 'admin/entreprises/edit.html.twig', [
+            'entreprise' => $entreprise,
+            'old_input' => $this->session->get('old_input', []),
+            'errors' => $this->session->get('form_errors', [])
+        ]);
+    }
     
-            $entityManager->flush();
+    public function edit(Request $request, Response $response, array $args): Response
+    {
+        $id = (int) $args['id'];
+        $data = $request->getParsedBody();
+        $entreprise = $this->entityManager->getRepository(Entreprise::class)->find($id);
     
-            // Redirection après succès
-            return $response->withHeader('Location', '/entreprises/' . $id)
-                           ->withStatus(302);
+        if (!$entreprise) {
+            $this->session->set('flash', [
+                'type' => 'error',
+                'message' => 'Entreprise non trouvée'
+            ]);
+            return $response->withHeader('Location', '/entreprises')->withStatus(302);
         }
     
-        // Affichage du formulaire
-        return $this->view->render($response, 'entreprise/edit.html.twig', [
-            'entreprise' => $entreprise,
-        ]);
+        // Validation des données
+        $errors = [];
+        $oldInput = $data;
+    
+        if (empty($data['nom'])) {
+            $errors['nom'] = 'Le nom est obligatoire';
+        }
+    
+        if (!empty($data['site_web']) && !filter_var($data['site_web'], FILTER_VALIDATE_URL)) {
+            $errors['site_web'] = 'URL invalide';
+        }
+    
+        if (!empty($errors)) {
+            $this->session->set('form_errors', $errors);
+            $this->session->set('old_input', $oldInput);
+            return $response->withHeader('Location', "/entreprises/$id/edit")->withStatus(302);
+        }
+    
+        // Mise à jour de l'entreprise
+        try {
+            $entreprise->setNom($data['nom'] ?? '');
+            $entreprise->setSecteur($data['secteur'] ?? null);
+            $entreprise->setEmail($data['email'] ?? null);
+            $entreprise->setTelephone($data['telephone'] ?? null);
+            $entreprise->setVille($data['ville'] ?? null);
+            $entreprise->setPays($data['pays'] ?? null);
+            $entreprise->setDescription($data['description'] ?? null);
+            //$entreprise->setSiteWeb($data['site_web'] ?? null);
+    
+            $this->entityManager->flush();
+    
+            $this->session->set('flash', [
+                'type' => 'success',
+                'message' => 'Entreprise modifiée avec succès'
+            ]);
+        } catch (\Exception $e) {
+            $this->session->set('flash', [
+                'type' => 'error',
+                'message' => 'Erreur lors de la modification : ' . $e->getMessage()
+            ]);
+        }
+    
+        return $response->withHeader('Location', '/entreprises')->withStatus(302);
     }
 
     public function evaluate(Request $request, Response $response, array $args): Response
