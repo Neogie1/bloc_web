@@ -97,8 +97,8 @@ $app->group('/admin/users', function ($group) {
           ->setName('admin.users.list');
     
     // Formulaire de création d'utilisateur (GET)
-    $group->get('/create', \App\Controller\UserController::class . ':createUserForm')
-          ->setName('admin.users.create.form');
+    $group->get('/create', \App\Controller\UserController::class . ':showCreateForm')
+          ->setName('admin.users.form');
     
     // Action de création d'utilisateur (POST)
     $group->post('/create', \App\Controller\UserController::class . ':createUser')
