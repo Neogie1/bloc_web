@@ -1,0 +1,38 @@
+{% extends "layout.html.twig" %}
+
+{% block content %}
+    <div class="titre d-flex flex-column align-items-center justify-content-center mt-4" id="maintitre">
+      <h1 class="fw-bold text-dark text-center display-4 display-sm-5 display-lg-6">
+        Modifier l'offre
+      </h1>
+    </div>
+
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <form method="POST" action="{{ path_for('offres.edit', {id: offre.id}) }}">
+            <div class="mb-3">
+              <label for="titre" class="form-label">Titre</label>
+              <input type="text" id="titre" name="titre" class="form-control" value="{{ old_input.titre ?? offre.titre }}">
+              {% if errors.titre %}
+                <div class="text-danger">{{ errors.titre }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea id="description" name="description" class="form-control">{{ old_input.description ?? offre.description }}</textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="entreprise" class="form-label">Entreprise</label>
+              <input type="text" id="entreprise" name="entreprise" class="form-control" value="{{ old_input.entreprise ?? offre.entreprise }}">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Modifier</button>
+          </form>
+        </div>
+      </div>
+    </div>
+{% include 'footer.html.twig' %}
+{% endblock %}

@@ -81,7 +81,8 @@ $container->set(UserController::class, function (Container $c) {
 $container->set(OfferController::class, function (Container $c) {
     return new OfferController(
         $c->get(EntityManagerInterface::class),
-        $c->get('view')
+        $c->get('view'),
+        $c->get('session')
     );
 });
 // Enregistrement du contrôleur EntrepriseController
@@ -109,7 +110,6 @@ $container->set(AdminMiddleware::class, function (Container $c) {
 // ==================================================
 
 
-
 // Routes pour les pages légales
 $app->get('/politique-confidentialite', function ($request, $response) {
     return $this->get('view')->render($response, 'politique-confidentialite.html.twig');
@@ -118,7 +118,6 @@ $app->get('/politique-confidentialite', function ($request, $response) {
 $app->get('/conditions-utilisation', function ($request, $response) {
     return $this->get('view')->render($response, 'conditions-utilisation.html.twig');
 })->setName('conditions_utilisation');
-
 
 // Routes publiques avec middleware conditionnel
 $app->get('/offres/search', [OfferController::class, 'search'])->setName('searchOffers')
@@ -130,7 +129,7 @@ $app->get('/offres/list', [OfferController::class, 'search'])->setName('listOffe
 // Route d'accueil (page publique)
 $app->get('/', function (Request $request, Response $response) {
     return $this->get('view')->render($response, 'home.html.twig');
-})->setName('home')->add($app->getContainer()->get(AuthMiddleware::class));;
+})->setName('home')->add($app->getContainer()->get(AuthMiddleware::class));
 
 // Route de connexion (GET pour afficher le formulaire)
 $app->get('/login', function (Request $request, Response $response) {
@@ -163,8 +162,6 @@ $app->group('', function ($group) use ($app) {
     
 })->add($app->getContainer()->get(ForcedAuthMiddleware::class));
 
-
-
 // Routes protégées (nécessitent une authentification)
 $app->group('/admin', function ($group) use ($app) {
     
@@ -174,7 +171,6 @@ $app->group('/admin', function ($group) use ($app) {
         ]);
     })->setName('admin.dashboard');
     
-
     $group->group('/users', function ($group) {
         // Liste des utilisateurs
         $group->get('', \App\Controller\UserController::class . ':listUsers')
@@ -201,8 +197,6 @@ $app->group('/admin', function ($group) use ($app) {
             ->setName('admin.users.delete');
     });
 
-    
-
     // Routes pour les entreprises
     $group->group('/entreprises', function ($group) {
         $group->get('', [EntrepriseController::class, 'list'])->setName('entreprises.list');
@@ -218,15 +212,29 @@ $app->group('/admin', function ($group) use ($app) {
         // Évaluation (tous utilisateurs)
         $group->post('/{id}/evaluate', [EntrepriseController::class, 'evaluate'])->setName('entreprises.evaluate');
 
-            // Suppression (modifiée en POST au lieu de DELETE)
-            $group->post('/{id:\d+}/delete', [EntrepriseController::class, 'delete'])->setName('entreprises.delete');
+        // Suppression (modifiée en POST au lieu de DELETE)
+        $group->post('/{id:\d+}/delete', [EntrepriseController::class, 'delete'])->setName('entreprises.delete');
         
         // Statistiques
         $group->get('/{id}/stats', [EntrepriseController::class, 'stats'])->setName('entreprises.stats');
     })->add($app->getContainer()->get(ForcedAuthMiddleware::class));
 
+    // Routes pour les offres
+    $group->group('/offres', function ($group) {
+        // Création d'une offre
+        $group->get('/create', [OfferController::class, 'createForm'])->setName('offres.create.form');
+        $group->post('/create', [OfferController::class, 'create'])->setName('offres.create');
+
+        // Édition d'une offre
+        $group->get('/{id}/edit', [OfferController::class, 'editForm'])->setName('offres.edit.form');
+        $group->post('/{id}/edit', [OfferController::class, 'edit'])->setName('offres.edit');
+
+        // Suppression d'une offre
+        $group->post('/{id}/delete', [OfferController::class, 'delete'])->setName('offres.delete');
+    })->add($app->getContainer()->get(AuthMiddleware::class));
 
 })->add($app->getContainer()->get(AdminMiddleware::class))->add($app->getContainer()->get(ForcedAuthMiddleware::class));
+
 
 
 // ==================================================

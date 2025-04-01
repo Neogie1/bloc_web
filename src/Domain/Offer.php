@@ -21,8 +21,8 @@ class Offer
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $skills;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)] // <-- nullable: true
+    private ?string $skills = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $location;
