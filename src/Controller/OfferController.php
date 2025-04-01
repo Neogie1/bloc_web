@@ -91,4 +91,18 @@ class OfferController
             'is_search' => !empty($searchTerm)
         ]);
     }
+    public function addToWishlist(int $offerId): Response
+{
+    $user = $this->getUser(); // Récupère l'utilisateur connecté
+    $offer = $this->offerRepository->find($offerId);
+
+    if ($offer) {
+        $wishlistItem = new Wishlist($user, $offer->getJobTitle(), $offer->getCompany(), $offer->getLocation(), $offer->getSkills());
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($wishlistItem);
+        $entityManager->flush();
+    }
+
+    return $this->redirectToRoute('offer_list'); // Ou recharger la page actuelle
+}
 }
