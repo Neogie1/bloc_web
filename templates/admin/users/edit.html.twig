@@ -1,0 +1,71 @@
+{% extends "admin/admin_layout.html.twig" %}
+
+{% block admincontent %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="bi bi-person me-2"></i> Modifier l'utilisateur</h2>
+                </div>
+                
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('admin.users.edit', {'id': user.id}) }}" id="userForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nom*</label>
+                                <input type="text" name="nom" class="form-control {% if errors.nom is defined %}is-invalid{% endif %}" 
+                                       value="{{ old_input.nom|default(user.nom) }}" required>
+                                {% if errors.nom is defined %}
+                                    <div class="invalid-feedback">{{ errors.nom }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Prénom*</label>
+                                <input type="text" name="prenom" class="form-control {% if errors.prenom is defined %}is-invalid{% endif %}" 
+                                       value="{{ old_input.prenom|default(user.prenom) }}" required>
+                                {% if errors.prenom is defined %}
+                                    <div class="invalid-feedback">{{ errors.prenom }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email*</label>
+                                <input type="email" name="email" class="form-control {% if errors.email is defined %}is-invalid{% endif %}" 
+                                       value="{{ old_input.email|default(user.email) }}" required>
+                                {% if errors.email is defined %}
+                                    <div class="invalid-feedback">{{ errors.email }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Rôle</label>
+                                <select name="role" class="form-control">
+                                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                                    <option value="pilote" {% if user.role == 'pilote' %}selected{% endif %}>Pilote</option>
+                                    <option value="etudiant" {% if user.role == 'etudiant' %}selected{% endif %}>Étudiant</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Mot de passe (laisser vide pour ne pas modifier)</label>
+                            <input type="password" name="password" class="form-control {% if errors.password is defined %}is-invalid{% endif %}" 
+                                   placeholder="Laisser vide pour conserver l'actuel">
+                            {% if errors.password is defined %}
+                                <div class="invalid-feedback">{{ errors.password }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-end">
+                            <a href="{{ url_for('admin.users.list') }}" class="btn btn-secondary me-2">Annuler</a>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

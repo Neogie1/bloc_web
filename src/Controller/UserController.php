@@ -27,44 +27,7 @@ class UserController
         return $user['role'] ?? null;
     }
 
-    public function createUser(Request $request, Response $response, $args)
-    {
-        $data = $request->getParsedBody();
-        
-        // Validation
-        if (empty($data['email']) || empty($data['password'])) {
-            $this->session->set('error', 'Email et mot de passe requis');
-            return $response->withHeader('Location', '/register')->withStatus(302);
-        }
 
-        // Vérification email existant
-        $existingUser = $this->entityManager->getRepository(User::class)
-            ->findOneBy(['email' => $data['email']]);
-            
-        if ($existingUser) {
-            $this->session->set('error', 'Cet email est déjà utilisé');
-            return $response->withHeader('Location', '/register')->withStatus(302);
-        }
-
-        // Création utilisateur
-        $user = new User(
-            $data['email'],
-            $data['password'],
-            $data['role'] ?? User::ROLE_ETUDIANT
-        );
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        // Connexion automatique
-        $this->session->set('user', [
-            'id' => $user->getId(),
-            'email' => $user->getEmail(),
-            'role' => $user->getRole()
-        ]);
-
-        return $response->withHeader('Location', '/dashboard')->withStatus(302);
-    }
 
     public function login(Request $request, Response $response, $args)
     {
@@ -213,6 +176,52 @@ class UserController
         ]);
     }
 
+    public function createUser(Request $request, Response $response, $args)
+    {
+        $data = $request->getParsedBody();
+        
+        // Validation
+        if (empty($data['email']) || empty($data['password'])) {
+            $this->session->set('error', 'Email et mot de passe requis');
+            return $response->withHeader('Location', '/register')->withStatus(302);
+        }
+
+        // Vérification email existant
+        $existingUser = $this->entityManager->getRepository(User::class)
+            ->findOneBy(['email' => $data['email']]);
+            
+        if ($existingUser) {
+            $this->session->set('error', 'Cet email est déjà utilisé');
+            return $response->withHeader('Location', '/register')->withStatus(302);
+        }
+
+        $role = isset($data['role']) ? $data['role'] : User::ROLE_ETUDIANT;
+
+        // Hachage du mot de passe
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+
+        $user = new User(
+            $data['email'],
+            $hashedPassword,
+            $data['nom'],
+            $data['prenom'],
+            $role
+        );
+
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        // Connexion automatique
+        $this->session->set('user', [
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'role' => $user->getRole()
+        ]);
+
+        return $response->withHeader('Location', '/dashboard')->withStatus(302);
+    }
+
     public function showCreateForm(Request $request, Response $response, $args)
     {
         return $this->twig->render($response, 'admin/users/create.html.twig', [
@@ -236,6 +245,7 @@ class UserController
         ]);
     }
 
+
     public function editUser(Request $request, Response $response, $args)
 {
     $userId = (int) $args['id'];
@@ -258,11 +268,19 @@ class UserController
     // Mise à jour des champs
     $user->setEmail($data['email']);
     
+    // Mise à jour du nom et prénom
+    if (!empty($data['nom'])) {
+        $user->setNom($data['nom']);
+    }
+    if (!empty($data['prenom'])) {
+        $user->setPrenom($data['prenom']);
+    }
+    
     if (!empty($data['password'])) {
         $user->setPassword($data['password']);
     }
     
-    $user->setRole($data['role'] ?? $user->getRole());
+    $user->setRole(!empty($data['role']) ? $data['role'] : $user->getRole());
 
     // Sauvegarde dans la base de données
     $this->entityManager->flush();
@@ -290,5 +308,26 @@ public function deleteUser(Request $request, Response $response, $args)
     // Redirection avec message de succès
     $this->session->set('flash', ['type' => 'success', 'message' => 'Utilisateur supprimé']);
     return $response->withHeader('Location', '/admin/users')->withStatus(302);
+    }
+
+    /**
+ * @Route("/admin/users/search", name="admin_users_search", methods={"GET"})
+ */
+/*public function searchUser(Request $request, UserRepository $userRepository): JsonResponse
+{
+    $query = $request->query->get('q', '');
+    $users = $userRepository->searchUsers($query);
+
+    return $this->json([
+        'users' => array_map(function ($user) {
+            return [
+                'id' => $user->getId(),
+                'nom' => $user->getNom(),
+                'prenom' => $user->getPrenom(),
+                'email' => $user->getEmail(),
+            ];
+        }, $users),
+    ]);
 }
+*/
 }

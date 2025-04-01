@@ -182,7 +182,7 @@ $app->group('/admin', function ($group) use ($app) {
             ->setName('admin.users.create');
         
         // Formulaire d'édition d'utilisateur (GET)
-        $group->get('/edit/{id}', \App\Controller\UserController::class . ':editUserForm')
+        $group->get('/edit/{id}', \App\Controller\UserController::class . ':showEditForm')
             ->setName('admin.users.edit.form');
         
         // Action d'édition d'utilisateur (POST)

@@ -56,6 +56,11 @@ final class User
         return $this->email;
     }
 
+    public function setEmail(string $email): void
+{
+    $this->email = $email;
+}
+
     public function getRegisteredAt(): DateTimeImmutable
     {
         return $this->registeredAt;
@@ -128,4 +133,16 @@ final class User
     {
         $this->prenom = $prenom;
     }
+
+ /*   public function searchUsers(string $query): array
+{
+    return $this->createQueryBuilder('u')
+        ->where('u.nom LIKE :query')
+        ->orWhere('u.prenom LIKE :query')
+        ->orWhere('u.email LIKE :query')
+        ->setParameter('query', '%' . $query . '%')
+        ->getQuery()
+        ->getResult();
+}
+*/
 }

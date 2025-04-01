@@ -13,9 +13,18 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h2><i class="bi bi-people me-2"></i> Gestion des utilisateurs</h2>
-                    <a href="{{ url_for('admin.users.create') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle"></i> Ajouter
-                    </a>
+                    <div class="d-flex align-items-center">
+                        <!-- Barre de recherche -->
+                        <form class="d-flex me-2" method="GET" action="{{ url_for('admin.users.list') }}">
+                            <input type="text" name="q" class="form-control" placeholder="Rechercher..." value="{{ app.request.getQueryParam('q') }}">
+                            <button class="btn btn-outline-secondary ms-1" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </form>
+                        <a href="{{ url_for('admin.users.create') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Ajouter
+                        </a>
+                    </div>
                 </div>
                 
                 <div class="card-body">
@@ -38,25 +47,26 @@
                                 <td>{{ user.prenom }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>
-                                    <span class="badge bg-{{ user.role == 'admin' ? 'danger' : 'primary' }}">
-                                        {{ user.role }}
+                                    <span class="badge bg-{{ user.role == 'admin' ? 'danger' : (user.role == 'pilote' ? 'success' : 'primary') }}">
+                                        {{ user.role|upper }}
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="{{ url_for('admin.users.edit', {id: user.id}) }}" 
-                                       class="btn btn-sm btn-primary">
+                                    <a href="{{ url_for('admin.users.edit', {id: user.id}) }}" class="btn btn-sm btn-primary">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form method="POST" action="{{ url_for('admin.users.delete', {id: user.id}) }}" 
-                                          style="display:inline;">
+                                    <form method="POST" action="{{ url_for('admin.users.delete', {id: user.id}) }}" style="display:inline;">
                                         <input type="hidden" name="_METHOD" value="DELETE">
-                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Supprimer cet utilisateur ?')">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer cet utilisateur ?')">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
                                 </td>
                             </tr>
+                            {% else %} 
+                                <tr>
+                                    <td colspan="6" class="text-center">Aucun utilisateur trouvé</td>
+                                </tr>
                             {% endfor %}
                         </tbody>
                     </table>
