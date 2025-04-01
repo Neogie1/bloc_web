@@ -120,9 +120,12 @@ $app->get('/conditions-utilisation', function ($request, $response) {
 })->setName('conditions_utilisation');
 
 
-// Routes publiques
-$app->get('/offres/search', [OfferController::class, 'search'])->setName('searchOffers');
-$app->get('/offres/list', [OfferController::class, 'search'])->setName('listOffers');
+// Routes publiques avec middleware conditionnel
+$app->get('/offres/search', [OfferController::class, 'search'])->setName('searchOffers')
+    ->add($container->get(ForcedAuthMiddleware::class));
+
+$app->get('/offres/list', [OfferController::class, 'search'])->setName('listOffers')
+    ->add($container->get(ForcedAuthMiddleware::class));
 
 // Route d'accueil (page publique)
 $app->get('/', function (Request $request, Response $response) {
