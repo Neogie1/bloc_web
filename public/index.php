@@ -121,7 +121,7 @@ $app->get('/conditions-utilisation', function ($request, $response) {
 
 
 // Routes publiques
-$app->get('/offres', [OfferController::class, 'search'])->setName('searchOffers');
+$app->get('/offres/search', [OfferController::class, 'search'])->setName('searchOffers');
 $app->get('/offres/list', [OfferController::class, 'search'])->setName('listOffers');
 
 // Route d'accueil (page publique)
