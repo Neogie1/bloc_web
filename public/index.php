@@ -7,6 +7,7 @@ use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
 use App\Controller\UserController;
 use App\Middleware\AuthMiddleware;
+use App\Middleware\ForcedAuthMiddleware;
 use App\Middleware\AdminMiddleware;
 use Doctrine\ORM\EntityManagerInterface;
 use SlimSession\Helper as SessionHelper;
@@ -92,9 +93,12 @@ $container->set(EntrepriseController::class, function (Container $c) {
     );
 });
 
-// Enregistrement du middleware AuthMiddleware dans le conteneur
 $container->set(AuthMiddleware::class, function (Container $c) {
     return new AuthMiddleware($c,$c->get('session'));
+});
+// Enregistrement du middleware AuthMiddleware dans le conteneur
+$container->set(ForcedAuthMiddleware::class, function (Container $c) {
+    return new ForcedAuthMiddleware($c,$c->get('session'));
 });
 $container->set(AdminMiddleware::class, function (Container $c) {
     return new AdminMiddleware($c->get('session'));
@@ -123,7 +127,7 @@ $app->get('/offres/list', [OfferController::class, 'search'])->setName('listOffe
 // Route d'accueil (page publique)
 $app->get('/', function (Request $request, Response $response) {
     return $this->get('view')->render($response, 'home.html.twig');
-})->setName('home');
+})->setName('home')->add($app->getContainer()->get(AuthMiddleware::class));;
 
 // Route de connexion (GET pour afficher le formulaire)
 $app->get('/login', function (Request $request, Response $response) {
@@ -154,7 +158,7 @@ $app->group('', function ($group) use ($app) {
     // Route pour déconnexion
     $group->post('/logout', [UserController::class, 'logout'])->setName('logout');
     
-})->add($app->getContainer()->get(AuthMiddleware::class));
+})->add($app->getContainer()->get(ForcedAuthMiddleware::class));
 
 
 
@@ -216,10 +220,10 @@ $app->group('/admin', function ($group) use ($app) {
         
         // Statistiques
         $group->get('/{id}/stats', [EntrepriseController::class, 'stats'])->setName('entreprises.stats');
-    })->add($app->getContainer()->get(AuthMiddleware::class));
+    })->add($app->getContainer()->get(ForcedAuthMiddleware::class));
 
 
-})->add($app->getContainer()->get(AdminMiddleware::class))->add($app->getContainer()->get(AuthMiddleware::class));
+})->add($app->getContainer()->get(AdminMiddleware::class))->add($app->getContainer()->get(ForcedAuthMiddleware::class));
 
 
 // ==================================================
