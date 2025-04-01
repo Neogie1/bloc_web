@@ -7,6 +7,7 @@ use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
 use App\Controller\UserController;
 use App\Middleware\AuthMiddleware;
+use App\Middleware\AdminMiddleware;
 use Doctrine\ORM\EntityManagerInterface;
 use SlimSession\Helper as SessionHelper;
 use Slim\Middleware\Session;
@@ -28,7 +29,9 @@ $app = AppFactory::create();
 // CONFIGURATION TWIG DANS LE CONTENEUR
 // ==================================================
 $container->set('view', function () {
-    return Twig::create(__DIR__ . '/../templates', ['cache' => false]);
+    $twig = Twig::create(__DIR__ . '/../templates', ['cache' => false,'debug'=>true]);
+    $twig->addExtension(new \Twig\Extension\DebugExtension());
+    return $twig;
 });
 
 // ==================================================
@@ -80,52 +83,6 @@ $container->set(OfferController::class, function (Container $c) {
         $c->get('view')
     );
 });
-
-// Enregistrement du middleware AuthMiddleware dans le conteneur
-$container->set(AuthMiddleware::class, function (Container $c) {
-    return new AuthMiddleware($c->get('session'));
-});
-
-
-// ==================================================
-// ROUTES
-// ==================================================
-
-$app->group('/admin/users', function ($group) {
-    // Liste des utilisateurs
-    $group->get('', \App\Controller\UserController::class . ':listUsers')
-          ->setName('admin.users.list');
-    
-    // Formulaire de création d'utilisateur (GET)
-    $group->get('/create', \App\Controller\UserController::class . ':showCreateForm')
-          ->setName('admin.users.form');
-    
-    // Action de création d'utilisateur (POST)
-    $group->post('/create', \App\Controller\UserController::class . ':createUser')
-          ->setName('admin.users.create');
-    
-    // Formulaire d'édition d'utilisateur (GET)
-    $group->get('/edit/{id}', \App\Controller\UserController::class . ':editUserForm')
-          ->setName('admin.users.edit.form');
-    
-    // Action d'édition d'utilisateur (POST)
-    $group->post('/edit/{id}', \App\Controller\UserController::class . ':editUser')
-          ->setName('admin.users.edit');
-    
-    // Action de suppression d'utilisateur (POST)
-    $group->post('/delete/{id}', \App\Controller\UserController::class . ':deleteUser')
-          ->setName('admin.users.delete');
-});
-
-// Routes pour les pages légales
-$app->get('/politique-confidentialite', function ($request, $response) {
-    return $this->get('view')->render($response, 'politique-confidentialite.html.twig');
-})->setName('politique_confidentialite');
-
-$app->get('/conditions-utilisation', function ($request, $response) {
-    return $this->get('view')->render($response, 'conditions-utilisation.html.twig');
-})->setName('conditions_utilisation');
-
 // Enregistrement du contrôleur EntrepriseController
 $container->set(EntrepriseController::class, function (Container $c) {
     return new EntrepriseController(
@@ -135,27 +92,28 @@ $container->set(EntrepriseController::class, function (Container $c) {
     );
 });
 
-// Routes pour les entreprises
-$app->group('/entreprises', function ($group) {
-    $group->get('', [EntrepriseController::class, 'list'])->setName('entreprises.list');
-    
-    // Création (admin et pilote seulement)
-    $group->get('/create', [EntrepriseController::class, 'createForm'])->setName('entreprises.create.form');
-    $group->post('/create', [EntrepriseController::class, 'create'])->setName('entreprises.create');
-    
-    // Édition (admin et pilote seulement)
-    $group->get('/{id}/edit', [EntrepriseController::class, 'editForm'])->setName('entreprises.edit.form');
-    $group->post('/{id}/edit', [EntrepriseController::class, 'edit'])->setName('entreprises.edit');
-    
-    // Évaluation (tous utilisateurs)
-    $group->post('/{id}/evaluate', [EntrepriseController::class, 'evaluate'])->setName('entreprises.evaluate');
+// Enregistrement du middleware AuthMiddleware dans le conteneur
+$container->set(AuthMiddleware::class, function (Container $c) {
+    return new AuthMiddleware($c,$c->get('session'));
+});
+$container->set(AdminMiddleware::class, function (Container $c) {
+    return new AdminMiddleware($c->get('session'));
+});
 
-        // Suppression (modifiée en POST au lieu de DELETE)
-        $group->post('/{id:\d+}/delete', [EntrepriseController::class, 'delete'])->setName('entreprises.delete');
-    
-    // Statistiques
-    $group->get('/{id}/stats', [EntrepriseController::class, 'stats'])->setName('entreprises.stats');
-})->add($app->getContainer()->get(AuthMiddleware::class));
+// ==================================================
+// ROUTES
+// ==================================================
+
+
+
+// Routes pour les pages légales
+$app->get('/politique-confidentialite', function ($request, $response) {
+    return $this->get('view')->render($response, 'politique-confidentialite.html.twig');
+})->setName('politique_confidentialite');
+
+$app->get('/conditions-utilisation', function ($request, $response) {
+    return $this->get('view')->render($response, 'conditions-utilisation.html.twig');
+})->setName('conditions_utilisation');
 
 
 // Routes publiques
@@ -170,8 +128,8 @@ $app->get('/', function (Request $request, Response $response) {
 // Route de connexion (GET pour afficher le formulaire)
 $app->get('/login', function (Request $request, Response $response) {
     return $this->get('view')->render($response, 'login.html.twig', [
-        'old_input' => $this->get('session')->get('old_input', []),
-        'errors' => $this->get('session')->get('login_errors', [])
+        'old_input' => '',
+        'errors' => []
     ]);
 })->setName('login');
 
@@ -182,30 +140,13 @@ $app->post('/login', [UserController::class, 'login'])->setName('loginUser');
 $app->post('/user', [UserController::class, 'createUser'])->setName('createUser');
 
 // Routes protégées (nécessitent une authentification)
-$app->group('', function ($group) {
+$app->group('', function ($group) use ($app) {
     
     // Route du tableau de bord principal
     $group->get('/dashboard', function (Request $request, Response $response) {
-        $session = $this->get('session');
         return $this->get('view')->render($response, 'dashboard.html.twig', [
-            'user' => $session->get('user')
         ]);
     })->setName('dashboard');
-
-    // Route du tableau de bord admin avec vérification de rôle
-    $group->get('/admin/dashboard', function (Request $request, Response $response) {
-        $session = $this->get('session');
-        $user = $session->get('user');
-        
-        if ($user['role'] !== User::ROLE_ADMIN) {
-            return $response->withHeader('Location', '/dashboard')
-                           ->withStatus(403);
-        }
-        
-        return $this->get('view')->render($response, 'admin/dashboard.html.twig', [
-            'user' => $user
-        ]);
-    })->setName('admin.dashboard');
     
     // Route pour afficher les informations de l'utilisateur actuel
     $group->get('/me', [UserController::class, 'getCurrentUser'])->setName('currentUser');
@@ -214,6 +155,73 @@ $app->group('', function ($group) {
     $group->post('/logout', [UserController::class, 'logout'])->setName('logout');
     
 })->add($app->getContainer()->get(AuthMiddleware::class));
+
+
+
+// Routes protégées (nécessitent une authentification)
+$app->group('/admin', function ($group) use ($app) {
+    
+    // Route du tableau de bord admin avec vérification de rôle
+    $group->get('/dashboard', function (Request $request, Response $response) {
+        return $this->get('view')->render($response, 'admin/dashboard.html.twig', [
+        ]);
+    })->setName('admin.dashboard');
+    
+
+    $group->group('/users', function ($group) {
+        // Liste des utilisateurs
+        $group->get('', \App\Controller\UserController::class . ':listUsers')
+            ->setName('admin.users.list');
+        
+        // Formulaire de création d'utilisateur (GET)
+        $group->get('/create', \App\Controller\UserController::class . ':showCreateForm')
+            ->setName('admin.users.form');
+        
+        // Action de création d'utilisateur (POST)
+        $group->post('/create', \App\Controller\UserController::class . ':createUser')
+            ->setName('admin.users.create');
+        
+        // Formulaire d'édition d'utilisateur (GET)
+        $group->get('/edit/{id}', \App\Controller\UserController::class . ':editUserForm')
+            ->setName('admin.users.edit.form');
+        
+        // Action d'édition d'utilisateur (POST)
+        $group->post('/edit/{id}', \App\Controller\UserController::class . ':editUser')
+            ->setName('admin.users.edit');
+        
+        // Action de suppression d'utilisateur (POST)
+        $group->post('/delete/{id}', \App\Controller\UserController::class . ':deleteUser')
+            ->setName('admin.users.delete');
+    });
+
+    
+
+    // Routes pour les entreprises
+    $group->group('/entreprises', function ($group) {
+        $group->get('', [EntrepriseController::class, 'list'])->setName('entreprises.list');
+        
+        // Création (admin et pilote seulement)
+        $group->get('/create', [EntrepriseController::class, 'createForm'])->setName('entreprises.create.form');
+        $group->post('/create', [EntrepriseController::class, 'create'])->setName('entreprises.create');
+        
+        // Édition (admin et pilote seulement)
+        $group->get('/{id}/edit', [EntrepriseController::class, 'editForm'])->setName('entreprises.edit.form');
+        $group->post('/{id}/edit', [EntrepriseController::class, 'edit'])->setName('entreprises.edit');
+        
+        // Évaluation (tous utilisateurs)
+        $group->post('/{id}/evaluate', [EntrepriseController::class, 'evaluate'])->setName('entreprises.evaluate');
+
+            // Suppression (modifiée en POST au lieu de DELETE)
+            $group->post('/{id:\d+}/delete', [EntrepriseController::class, 'delete'])->setName('entreprises.delete');
+        
+        // Statistiques
+        $group->get('/{id}/stats', [EntrepriseController::class, 'stats'])->setName('entreprises.stats');
+    })->add($app->getContainer()->get(AuthMiddleware::class));
+
+
+})->add($app->getContainer()->get(AdminMiddleware::class))->add($app->getContainer()->get(AuthMiddleware::class));
+
+
 // ==================================================
 // DÉMARRAGE DE L'APPLICATION
 // ==================================================

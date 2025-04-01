@@ -92,19 +92,20 @@ class UserController
         $oldInput = ['email' => $data['email'] ?? ''];
 
         if (empty($data['email'])) {
-            $errors['email'] = 'L\'email est requis';
+            $errors[] = 'L\'email est requis';
         } elseif (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Format d\'email invalide';
+            $errors[] = 'Format d\'email invalide';
         }
 
         if (empty($data['password'])) {
-            $errors['password'] = 'Le mot de passe est requis';
+            $errors[] = 'Le mot de passe est requis';
         }
 
         if (!empty($errors)) {
-            $this->session->set('login_errors', $errors);
-            $this->session->set('old_input', $oldInput);
-            return $response->withHeader('Location', '/login')->withStatus(302);
+            return $this->twig->render($response, 'login.html.twig', [
+                'old_input' => $oldInput,
+                'errors' => $errors
+            ]);
         }
 
         // Recherche utilisateur
@@ -116,16 +117,20 @@ class UserController
         // Vérification identifiants
         if (!$user) {
             error_log('Échec de connexion: Email introuvable');
-            $this->session->set('login_error', 'Aucun compte trouvé avec cet email');
-            $this->session->set('old_input', $oldInput);
-            return $response->withHeader('Location', '/login')->withStatus(302);
+            $errors[] = 'Aucun compte trouvé avec cet email';
+            return $this->twig->render($response, 'login.html.twig', [
+                'old_input' => $oldInput,
+                'errors' => $errors
+            ]);
         }
 
         if (!password_verify($data['password'], $user->getPassword())) {
             error_log('Échec de connexion: Mot de passe incorrect');
-            $this->session->set('login_error', 'Mot de passe incorrect');
-            $this->session->set('old_input', $oldInput);
-            return $response->withHeader('Location', '/login')->withStatus(302);
+            $errors[] ='Mot de passe incorrect';
+            return $this->twig->render($response, 'login.html.twig', [
+                'old_input' => $oldInput,
+                'errors' => $errors
+            ]);
         }
 
         // Connexion réussie

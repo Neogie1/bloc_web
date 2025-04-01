@@ -1,14 +1,6 @@
-{% extends "layout.html.twig" %}
+{% extends "admin/admin_layout.html.twig" %}
 
-{% block content %}
-</br>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-3">
-            {% include 'admin/_menu.html.twig' %}
-        </div>
-        
-        <div class="col-md-9">
+{% block admincontent %}
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h2><i class="bi bi-building me-2"></i> Gestion des entreprises</h2>
