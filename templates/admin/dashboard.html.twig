@@ -9,7 +9,7 @@
     </div>
     <div class="card-body">
         <div class="alert alert-info">
-            Connecté en tant que <strong>{{ session.get('user').email }}</strong>
+            Connecté en tant que <strong>{{ user.prenom }}</strong>
             <span class="badge bg-secondary ms-2">{{ session.get('user').role }}</span>
         </div>
 

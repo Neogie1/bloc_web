@@ -4,7 +4,7 @@
     <div class="container my-5">
         <h1>Bienvenue sur votre tableau de bord</h1>
         <div class="alert alert-success">
-            Connecté en tant que <strong>{{ session.get('user').email }}</strong> ({{ session.get('user').role }})
+            Connecté en tant que <strong>{{ user.prenom }}</strong> {{ session.get('user').role }}
         </div>
         <form action="{{ url_for('logout') }}" method="POST">
             <button type="submit" class="btn btn-danger">Déconnexion</button>
