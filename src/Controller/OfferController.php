@@ -195,55 +195,60 @@ class OfferController
             'errors' => $this->session->get('form_errors', [])
         ]);
     }
+    
+   public function edit(Request $request, Response $response, array $args): Response {
+    $id = (int) $args['id'];
+    $data = $request->getParsedBody();
+    $offre = $this->entityManager->getRepository(Offer::class)->find($id);
 
-    public function edit(Request $request, Response $response, array $args): Response {
-        $id = (int) $args['id'];
-        $data = $request->getParsedBody();
-        $offre = $this->entityManager->getRepository(Offer::class)->find($id);
-    
-        if (!$offre) {
-            $this->session->set('flash', [
-                'type' => 'error',
-                'message' => 'Offre non trouvée'
-            ]);
-            return $response->withHeader('Location', '/offres')->withStatus(302);
-        }
-    
-        // Validation des données
-        $errors = [];
-        $oldInput = $data;
-    
-        if (empty($data['titre'])) {
-            $errors['titre'] = 'Le titre est obligatoire';
-        }
-    
-        if (!empty($errors)) {
-            $this->session->set('form_errors', $errors);
-            $this->session->set('old_input', $oldInput);
-            return $response->withHeader('Location', "/offres/$id/edit")->withStatus(302);
-        }
-    
-                // Mise à jour de l'offre
-                try {
-                    $offre->setTitre($data['titre'] ?? '');
-                    $offre->setDescription($data['description'] ?? null);
-                    $offre->setEntreprise($data['entreprise'] ?? null);
-            
-                    $this->entityManager->flush();
-            
-                    $this->session->set('flash', [
-                        'type' => 'success',
-                        'message' => 'Offre modifiée avec succès'
-                    ]);
-                } catch (\Exception $e) {
-                    $this->session->set('flash', [
-                        'type' => 'error',
-                        'message' => 'Erreur lors de la modification : ' . $e->getMessage()
-                    ]);
-                }
-            
-                return $response->withHeader('Location', '/offres')->withStatus(302);
-            }
+    if (!$offre) {
+        $this->session->set('flash', [
+            'type' => 'error',
+            'message' => 'Offre non trouvée'
+        ]);
+        return $response->withHeader('Location', '/admin/offres/admin')->withStatus(302);
+    }
+
+    // Validation des données
+    $errors = [];
+    $oldInput = $data;
+
+    if (empty($data['title'])) {
+        $errors['title'] = 'Le titre est obligatoire';
+    }
+
+    if (!empty($errors)) {
+        $this->session->set('form_errors', $errors);
+        $this->session->set('old_input', $oldInput);
+        return $response->withHeader('Location', "/admin/offres/{$id}/edit")->withStatus(302);
+    }
+
+    // Mise à jour de l'offre
+    try {
+        $offre->setTitle($data['title'] ?? '');
+        $offre->setDescription($data['description'] ?? null);
+        $offre->setCompany($data['company'] ?? null);
+        $offre->setSkills($data['skills'] ?? null);
+        $offre->setLocation($data['location'] ?? null);
+        $offre->setSalary($data['salary'] ?? null);
+        $offre->setContractType($data['contractType'] ?? null);
+
+        $this->entityManager->flush();
+
+        $this->session->set('flash', [
+            'type' => 'success',
+            'message' => 'Offre modifiée avec succès'
+        ]);
+    } catch (\Exception $e) {
+        $this->session->set('flash', [
+            'type' => 'error',
+            'message' => 'Erreur lors de la modification : ' . $e->getMessage()
+        ]);
+    }
+
+    return $response->withHeader('Location', '/admin/offres/admin')->withStatus(302);
+}
+
         
             public function delete(Request $request, Response $response, array $args): Response {
                 $id = (int) $args['id'];
