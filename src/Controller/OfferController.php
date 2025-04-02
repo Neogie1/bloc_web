@@ -174,7 +174,7 @@ class OfferController
         // Obtenir le routeur et générer l'URL
         $routeContext = RouteContext::fromRequest($request);
         $routeParser = $routeContext->getRouteParser();
-        $url = $routeParser->urlFor('offres.create.form');
+        $url = $routeParser->urlFor('offres.admin.list');
 
         // Redirection après la création
         return $response->withHeader('Location', $url)->withStatus(302);
