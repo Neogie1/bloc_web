@@ -10,7 +10,7 @@
     <div class="container mt-5">
       <div class="row justify-content-center">
         <div class="col-md-8">
-                  {% if flash %}
+          {% if flash %}
             <div class="alert alert-{{ flash.type }} mb-4">
               {{ flash.message }}
             </div>
@@ -18,7 +18,7 @@
           <form method="POST" action="{{ url_for('offres.create') }}">
             <div class="mb-3">
               <label for="title" class="form-label">Titre</label>
-              <input type="text" id="title" name="title" class="form-control" value="{{ old_input.title ?? '' }}" required>
+              <input type="text" id="title" name="title" class="form-control" required>
               {% if errors.title %}
                 <div class="text-danger">{{ errors.title }}</div>
               {% endif %}
@@ -26,32 +26,32 @@
 
             <div class="mb-3">
               <label for="company" class="form-label">Entreprise</label>
-              <input type="text" id="company" name="company" class="form-control" value="{{ old_input.company ?? '' }}" required>
+              <input type="text" id="company" name="company" class="form-control" required>
             </div>
 
             <div class="mb-3">
               <label for="description" class="form-label">Description</label>
-              <textarea id="description" name="description" class="form-control">{{ old_input.description ?? '' }}</textarea>
+              <textarea id="description" name="description" class="form-control"></textarea>
             </div>
 
             <div class="mb-3">
               <label for="skills" class="form-label">Compétences</label>
-              <input type="text" id="skills" name="skills" class="form-control" value="{{ old_input.skills ?? '' }}">
+              <input type="text" id="skills" name="skills" class="form-control">
             </div>
 
             <div class="mb-3">
               <label for="location" class="form-label">Lieu</label>
-              <input type="text" id="location" name="location" class="form-control" value="{{ old_input.location ?? '' }}">
+              <input type="text" id="location" name="location" class="form-control">
             </div>
 
             <div class="mb-3">
               <label for="salary" class="form-label">Salaire</label>
-              <input type="number" id="salary" name="salary" class="form-control" value="{{ old_input.salary ?? '' }}" step="0.01">
+              <input type="number" id="salary" name="salary" class="form-control" step="0.01">
             </div>
 
             <div class="mb-3">
               <label for="contractType" class="form-label">Type de contrat</label>
-              <input type="text" id="contractType" name="contractType" class="form-control" value="{{ old_input.contractType ?? '' }}">
+              <input type="text" id="contractType" name="contractType" class="form-control">
             </div>
 
             <button type="submit" class="btn btn-primary">Créer</button>
