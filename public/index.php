@@ -223,23 +223,23 @@ $app->group('/admin', function ($group) use ($app) {
         // Liste des offres pour l'administration
         $group->get('/admin', [OfferController::class, 'adminList'])->setName('offres.admin.list');    
 
-// Liste des offres pour la recherche
-$group->get('', [OfferController::class, 'list'])->setName('offres.list');
+        // Liste des offres pour la recherche
+        $group->get('', [OfferController::class, 'list'])->setName('offres.list');
 
 
 
-    // Création d'une offre
-    $group->get('/create', [OfferController::class, 'createForm'])->setName('offres.create.form');
-    $group->post('/create', [OfferController::class, 'create'])->setName('offres.create');
+        // Création d'une offre
+        $group->get('/create', [OfferController::class, 'createForm'])->setName('offres.create.form');
+        $group->post('/create', [OfferController::class, 'create'])->setName('offres.create');
 
 
-    // Édition d'une offre
-    $group->get('/{id}/edit', [OfferController::class, 'editForm'])->setName('offres.edit.form');
-    $group->post('/{id}/edit', [OfferController::class, 'edit'])->setName('offres.edit');
+        // Édition d'une offre
+        $group->get('/{id}/edit', [OfferController::class, 'editForm'])->setName('offres.edit.form');
+        $group->post('/{id}/edit', [OfferController::class, 'edit'])->setName('offres.edit');
 
 
-    // Suppression d'une offre
-    $group->post('/{id}/delete', [OfferController::class, 'delete'])->setName('offres.delete');
+        // Suppression d'une offre
+        $group->post('/{id}/delete', [OfferController::class, 'delete'])->setName('offres.delete');
 })->add($app->getContainer()->get(AuthMiddleware::class));
 })->add($app->getContainer()->get(AdminMiddleware::class))->add($app->getContainer()->get(ForcedAuthMiddleware::class));
 

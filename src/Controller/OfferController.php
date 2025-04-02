@@ -254,7 +254,7 @@ class OfferController
                         'type' => 'error',
                         'message' => 'Offre non trouvée'
                     ]);
-                    return $response->withHeader('Location', '/offres')->withStatus(302);
+                    return $response->withHeader('Location', '/admin/offres/admin')->withStatus(302);
                 }
             
                 try {
@@ -272,8 +272,9 @@ class OfferController
                     ]);
                 }
             
-                return $response->withHeader('Location', '/offres')->withStatus(302);
+                return $response->withHeader('Location', '/admin/offres/admin')->withStatus(302);
             }
+            
 
             public function adminList(Request $request, Response $response): Response
             {
