@@ -274,5 +274,17 @@ class OfferController
             
                 return $response->withHeader('Location', '/offres')->withStatus(302);
             }
-        }
+
+            public function adminList(Request $request, Response $response): Response
+            {
+                $repository = $this->entityManager->getRepository(Offer::class);
+                $offres = $repository->findAll();
+            
+                return $this->view->render($response, 'admin/offres/list.html.twig', [
+                    'offres' => $offres,
+                    'user_role' => $this->session->get('user')['role']
+                ]);
+            }
+            
+}
         

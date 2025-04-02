@@ -1,0 +1,70 @@
+{% extends "admin/admin_layout.html.twig" %}
+
+{% block admincontent %}
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2><i class="bi bi-briefcase me-2"></i> Gestion des offres d'emploi</h2>
+            {% if user_role in ['admin', 'pilote'] %}
+                <a href="{{ url_for('offres.create.form') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Ajouter
+                </a>
+            {% endif %}
+        </div>
+        
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Entreprise</th>
+                            <th>Localisation</th>
+                            <th>Date de publication</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for offre in offres %}
+                        <tr>
+                            <td>{{ offre.title }}</td>
+                            <td>{{ offre.company }}</td>
+                            <td>{{ offre.location }}</td>
+                            <td>{{ offre.createdAt|date('d/m/Y') }}</td>
+                            <td>
+                                <a href="{{ url_for('offres.edit.form', {'id': offre.id}) }}" 
+                                   class="btn btn-sm btn-primary"
+                                   title="Modifier">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                
+                                <form method="POST" action="{{ url_for('offres.delete', {'id': offre.id}) }}" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger" 
+                                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ offre.title }} ?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Gestion du modal de suppression
+    $('.delete-btn').click(function() {
+        const offreId = $(this).data('id');
+        const offreTitre = $(this).data('titre');
+        
+        $('#offreTitre').text(offreTitre);
+        $('#deleteForm').attr('action', `/offres/${offreId}/delete`);
+        $('#deleteModal').modal('show');
+    });
+});
+</script>
+{% endblock %}
