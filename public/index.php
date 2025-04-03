@@ -16,6 +16,7 @@ use DI\Container;
 use App\Controller\OfferController;
 use App\Domain\User;
 use App\Controller\EntrepriseController;
+use App\Controller\ApplicationController;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -251,7 +252,10 @@ $app->group('/admin', function ($group) use ($app) {
 })->add($app->getContainer()->get(AuthMiddleware::class));
 })->add($app->getContainer()->get(AdminMiddleware::class))->add($app->getContainer()->get(ForcedAuthMiddleware::class));
 
-
+// Après les autres routes
+$app->post('/offres/{id}/postuler', [ApplicationController::class, 'submitApplication'])
+    ->setName('application.submit')
+    ->add($container->get(ForcedAuthMiddleware::class));
 
 // ==================================================
 // DÉMARRAGE DE L'APPLICATION

@@ -68,14 +68,18 @@
             <div class="mt-4 pt-4" style="border-top: 1px solid #e5e7eb;"></div>
             
             <div class="d-flex justify-content-center" style="margin-top: 10px;">
-              <a href="#" class="btn btn-hover" 
-                style="background-color: rgba(155, 135, 245, 0.1); color: #6b5cf6; width: 100%; font-weight: 500; padding: 0.5rem; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center; text-decoration: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send me-2" style="color: #6b5cf6;">
-                  <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path>
-                  <path d="m21.854 2.147-10.94 10.939"></path>
-                </svg>
-                Postuler
-              </a>
+    {# Remplacement du lien par un bouton modal #}
+    <button type="button" 
+            class="btn btn-hover" 
+            style="background-color: rgba(155, 135, 245, 0.1); color: #6b5cf6; width: 100%; font-weight: 500; padding: 0.5rem; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center; text-decoration: none;"
+            data-bs-toggle="modal" 
+            data-bs-target="#applicationModal{{ offer.id }}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send me-2" style="color: #6b5cf6;">
+            <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path>
+            <path d="m21.854 2.147-10.94 10.939"></path>
+        </svg>
+        Postuler
+    </button>
 <button class="btn btn-hover ms-2 wishlist-btn" 
     data-offer-id="{{ offer.id }}"
     style="background-color: rgba(255, 0, 0, 0.1); color: #ff0000; width: 100%; font-weight: 500; padding: 0.5rem; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center; text-decoration: none;">
@@ -86,7 +90,66 @@
 </button>
             </div>
           </div>
+          <!-- Modal de candidature -->
+<div class="modal fade" id="applicationModal{{ offer.id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 0.5rem; border: 1px solid #e5e7eb;">
+      <form action="{{ url_for('application.submit', {id: offer.id}) }}" method="post" enctype="multipart/form-data">
+        <!-- En-tête -->
+        <div class="modal-header" style="border-bottom: 1px solid #e5e7eb;">
+          <h5 class="modal-title fw-semibold" style="color: #000000;">
+            Postuler chez {{ offer.company }}
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        
+        <!-- Corps -->
+        <div class="modal-body py-4">
+          <!-- Champ CV -->
+          <div class="mb-4">
+            <label class="form-label d-block mb-2" style="color: #4b5563; font-weight: 500;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text me-1">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" x2="8" y1="13" y2="13"/>
+                <line x1="16" x2="8" y1="17" y2="17"/>
+                <line x1="10" x2="8" y1="9" y2="9"/>
+              </svg>
+              CV (PDF, max 2MB)
+            </label>
+            <input type="file" class="form-control" name="cv" accept=".pdf" required style="border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem;">
+          </div>
+          
+          <!-- Champ Lettre de motivation -->
+          <div class="mb-2">
+            <label class="form-label d-block mb-2" style="color: #4b5563; font-weight: 500;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail me-1">
+                <rect width="20" height="16" x="2" y="4" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+              Lettre de motivation (PDF, max 2MB)
+            </label>
+            <input type="file" class="form-control" name="cover_letter" accept=".pdf" required style="border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem;">
+          </div>
+        </div>
+        
+        <!-- Pied de modal -->
+        <div class="modal-footer" style="border-top: 1px solid #e5e7eb;">
+          <button type="button" class="btn btn-hover" data-bs-dismiss="modal" 
+                  style="background-color: rgba(155, 135, 245, 0.1); color: #6b5cf6; font-weight: 500; padding: 0.5rem 1rem; border-radius: 0.375rem;">
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-hover" 
+                  style="background-color: #6b5cf6; color: white; font-weight: 500; padding: 0.5rem 1rem; border-radius: 0.375rem;">
+            Envoyer ma candidature
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+        </div>
+        
         
         {# Clearfix pour le responsive #}
         {% if loop.index % 3 == 0 %}
