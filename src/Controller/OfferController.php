@@ -143,6 +143,22 @@ class OfferController
 
     return $response->withHeader('Location', '/offres')->withStatus(302);
 }
+
+public function createForm(Request $request, Response $response): Response 
+{
+    $user = $this->session->get('user');
+    
+    if (!in_array($user['role'], [User::ROLE_ADMIN, User::ROLE_PILOTE])) {
+        return $response->withHeader('Location', '/dashboard')->withStatus(403);
+    }
+    
+    return $this->view->render($response, 'admin/offres/create.html.twig', [
+        'user_role' => $user['role'],
+        'old_input' => $this->session->get('old_input', []),
+        'errors' => $this->session->get('form_errors', [])
+    ]);
+}
+
     public function create(Request $request, Response $response): Response {
         $user = $this->session->get('user');
         $data = $request->getParsedBody();
