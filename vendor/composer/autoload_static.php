@@ -265,9 +265,11 @@ class ComposerStaticInit026509606a55be5c56c243e48adc6597
     );
 
     public static $classMap = array (
+        'App\\Controller\\ApplicationController' => __DIR__ . '/../..' . '/src/Controller/ApplicationController.php',
         'App\\Controller\\EntrepriseController' => __DIR__ . '/../..' . '/src/Controller/EntrepriseController.php',
         'App\\Controller\\OfferController' => __DIR__ . '/../..' . '/src/Controller/OfferController.php',
         'App\\Controller\\UserController' => __DIR__ . '/../..' . '/src/Controller/UserController.php',
+        'App\\Domain\\Application' => __DIR__ . '/../..' . '/src/Domain/Application.php',
         'App\\Domain\\Entreprise' => __DIR__ . '/../..' . '/src/Domain/Entreprise.php',
         'App\\Domain\\Offer' => __DIR__ . '/../..' . '/src/Domain/Offer.php',
         'App\\Domain\\User' => __DIR__ . '/../..' . '/src/Domain/User.php',
@@ -275,6 +277,7 @@ class ComposerStaticInit026509606a55be5c56c243e48adc6597
         'App\\Middleware\\AuthMiddleware' => __DIR__ . '/../..' . '/src/Middleware/AuthMiddleware.php',
         'App\\Middleware\\ForcedAuthMiddleware' => __DIR__ . '/../..' . '/src/Middleware/ForcedAuthMiddleware.php',
         'App\\Service\\UserService' => __DIR__ . '/../..' . '/src/Service/UserService.php',
+        'App\\Twig\\AppExtension' => __DIR__ . '/../..' . '/src/Twig/AppExtension.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'CURLStringFile' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/CURLStringFile.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',

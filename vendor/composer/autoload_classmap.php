@@ -6,9 +6,11 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Controller\\ApplicationController' => $baseDir . '/src/Controller/ApplicationController.php',
     'App\\Controller\\EntrepriseController' => $baseDir . '/src/Controller/EntrepriseController.php',
     'App\\Controller\\OfferController' => $baseDir . '/src/Controller/OfferController.php',
     'App\\Controller\\UserController' => $baseDir . '/src/Controller/UserController.php',
+    'App\\Domain\\Application' => $baseDir . '/src/Domain/Application.php',
     'App\\Domain\\Entreprise' => $baseDir . '/src/Domain/Entreprise.php',
     'App\\Domain\\Offer' => $baseDir . '/src/Domain/Offer.php',
     'App\\Domain\\User' => $baseDir . '/src/Domain/User.php',
@@ -16,6 +18,7 @@ return array(
     'App\\Middleware\\AuthMiddleware' => $baseDir . '/src/Middleware/AuthMiddleware.php',
     'App\\Middleware\\ForcedAuthMiddleware' => $baseDir . '/src/Middleware/ForcedAuthMiddleware.php',
     'App\\Service\\UserService' => $baseDir . '/src/Service/UserService.php',
+    'App\\Twig\\AppExtension' => $baseDir . '/src/Twig/AppExtension.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'CURLStringFile' => $vendorDir . '/symfony/polyfill-php81/Resources/stubs/CURLStringFile.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',

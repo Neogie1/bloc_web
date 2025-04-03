@@ -42,8 +42,8 @@ class ApplicationController
 
             // Création candidature
             $application = new Application();
-            $application->setUser($this->em->getReference(\App\Entity\User::class, $user['id']))
-                       ->setOffer($this->em->getReference(\App\Entity\Offer::class, $args['id']))
+            $application->setUser($this->em->getReference(\App\Domain\User::class, $user['id']))
+           ->setOffer($this->em->getReference(\App\Domain\Offer::class, $args['id']))
                        ->setCvPath($cvPath)
                        ->setCoverLetterPath($coverLetterPath)
                        ->setAppliedAt(new \DateTime());

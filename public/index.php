@@ -86,6 +86,15 @@ $container->set(OfferController::class, function (Container $c) {
         $c->get('session')
     );
 });
+
+$container->set(ApplicationController::class, function (Container $c) {
+    return new ApplicationController(
+        $c->get(EntityManagerInterface::class),
+        $c->get('view'),
+        $c->get('session')
+    );
+});
+
 // Enregistrement du contrôleur EntrepriseController
 $container->set(EntrepriseController::class, function (Container $c) {
     return new EntrepriseController(
