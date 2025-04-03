@@ -71,9 +71,10 @@ final class User
         return $this->password;
     }
 
-    public function setPassword(string $password): void
+    public function setPassword(string $hashedPassword): self
     {
-        $this->password = password_hash($password, PASSWORD_BCRYPT);
+        $this->password = $hashedPassword;
+        return $this;
     }
 
     public function getRole(): string
