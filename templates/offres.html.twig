@@ -76,6 +76,14 @@
                 </svg>
                 Postuler
               </a>
+<button class="btn btn-hover ms-2 wishlist-btn" 
+    data-offer-id="{{ offer.id }}"
+    style="background-color: rgba(255, 0, 0, 0.1); color: #ff0000; width: 100%; font-weight: 500; padding: 0.5rem; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart me-2" style="color: #ff0000;">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+    </svg>
+    Wishlist
+</button>
             </div>
           </div>
         </div>
@@ -144,5 +152,32 @@
     </div>
   {% endif %}
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll(".btn-hover").forEach(button => {
+    button.addEventListener("click", function() {
+      const offerId = this.getAttribute("data-offer-id");
+      const isActive = this.classList.toggle("active");
+
+      // Envoyer la requête au serveur pour ajouter/enlever l'offre de la wishlist
+      fetch(`/wishlist/toggle/${offerId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ add: isActive })
+      });
+
+      // Modifier l'apparence du bouton
+      const icon = this.querySelector("svg");
+      if (isActive) {
+        this.style.backgroundColor = "rgba(255, 0, 0, 0.3)"; // Rouge plus marqué
+        icon.style.fill = "#ff0000"; // Remplissage rouge
+      } else {
+        this.style.backgroundColor = "rgba(255, 0, 0, 0.1)"; // Retour à la couleur initiale
+        icon.style.fill = "none"; // Icône vide
+      }
+    });
+  });
+});
+</script>
 {% include 'footer.html.twig' %}
 {% endblock %}

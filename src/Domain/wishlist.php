@@ -1,80 +1,60 @@
 <?php
+
 namespace App\Domain;
 
 use DateTimeImmutable;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping as ORM;
+use App\Domain\User;
+use App\Domain\Offer; // Supposons que vous avez une entité Offer
 
-#[Entity, Table(name: 'wishlists')]
-final class Wishlist
+#[ORM\Entity]
+#[ORM\Table(name: 'wishlists')]
+class Wishlist
 {
-    #[Id, Column(type: 'integer'), GeneratedValue(strategy: 'AUTO')]
-    private int $id;
-
-    #[ManyToOne(targetEntity: User::class, inversedBy: 'wishlists')]
+    #[ORM\Id]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'wishlists')]
+    #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[Column(type: 'string', nullable: false)]
-    private string $jobTitle;
+    #[ORM\Id]
+    #[ORM\ManyToOne(targetEntity: Offer::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private Offer $offer;
 
-    #[Column(type: 'string', nullable: false)]
-    private string $company;
-
-    #[Column(type: 'string', nullable: false)]
-    private string $location;
-
-    #[Column(type: 'string', nullable: true)]
-    private ?string $skills;
-
-    #[Column(name: 'added_at', type: 'datetimetz_immutable', nullable: false)]
+    #[ORM\Column(name: 'added_at', type: 'datetimetz_immutable', nullable: false)]
     private DateTimeImmutable $addedAt;
 
-    public function __construct(User $user, string $jobTitle, string $company, string $location, ?string $skills = null)
+    public function __construct(User $user, Offer $offer)
     {
         $this->user = $user;
-        $this->jobTitle = $jobTitle;
-        $this->company = $company;
-        $this->location = $location;
-        $this->skills = $skills;
+        $this->offer = $offer;
         $this->addedAt = new DateTimeImmutable('now');
     }
 
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
+    // Getters
     public function getUser(): User
     {
         return $this->user;
     }
 
-    public function getJobTitle(): string
+    public function getOffer(): Offer
     {
-        return $this->jobTitle;
-    }
-
-    public function getCompany(): string
-    {
-        return $this->company;
-    }
-
-    public function getLocation(): string
-    {
-        return $this->location;
-    }
-
-    public function getSkills(): ?string
-    {
-        return $this->skills;
+        return $this->offer;
     }
 
     public function getAddedAt(): DateTimeImmutable
     {
         return $this->addedAt;
+    }
+
+    // Setters
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
+    }
+
+    public function setOffer(Offer $offer): void
+    {
+        $this->offer = $offer;
     }
 }

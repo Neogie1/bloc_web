@@ -6,6 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Doctrine\ORM\EntityManagerInterface;
 use Slim\Views\Twig;
 use App\Domain\Offer;
+use App\Domain\Wishlist;
 use Slim\Routing\RouteContext;
 use App\Domain\User;
 
@@ -96,35 +97,52 @@ class OfferController
         ]);
     }
 
-    public function addToWishlist(int $offerId): Response
-    {
-        $user = $this->getUser(); // Récupère l'utilisateur connecté
-        $offer = $this->offerRepository->find($offerId);
+    public function addToWishlist(Request $request, Response $response, array $args): Response
+{
+    $offerId = (int)$args['id'];
+    $user = $this->getUser(); // Fonction à implémenter pour récupérer l'utilisateur connecté
 
-        if ($offer) {
-            $wishlistItem = new Wishlist($user, $offer->getJobTitle(), $offer->getCompany(), $offer->getLocation(), $offer->getSkills());
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($wishlistItem);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('offer_list'); // Ou recharger la page actuelle
+    if (!$user) {
+        $this->session->set('flash', [
+            'type' => 'error',
+            'message' => 'Vous devez être connecté pour ajouter une offre en favoris.'
+        ]);
+        return $response->withHeader('Location', '/login')->withStatus(302);
     }
 
-    public function createForm(Request $request, Response $response): Response {
-        $user = $this->session->get('user');
-        
-        if (!in_array($user['role'], [User::ROLE_ADMIN, User::ROLE_PILOTE])) {
-            return $response->withHeader('Location', '/dashboard')->withStatus(403);
-        }
-        
-        return $this->view->render($response, 'admin/offres/create.html.twig', [
-            'user_role' => $user['role'],
-            'old_input' => $this->session->get('old_input', []),
-            'errors' => $this->session->get('form_errors', [])
+    $offer = $this->entityManager->getRepository(Offer::class)->find($offerId);
+
+    if (!$offer) {
+        $this->session->set('flash', [
+            'type' => 'error',
+            'message' => 'Offre introuvable.'
+        ]);
+        return $response->withHeader('Location', '/offres')->withStatus(302);
+    }
+
+    // Vérifier si l'offre est déjà dans la wishlist
+    $wishlistRepo = $this->entityManager->getRepository(Wishlist::class);
+    $existingWishlist = $wishlistRepo->findOneBy(['user' => $user, 'offer' => $offer]);
+
+    if ($existingWishlist) {
+        $this->session->set('flash', [
+            'type' => 'info',
+            'message' => 'Cette offre est déjà dans votre wishlist.'
+        ]);
+    } else {
+        // Ajouter l'offre à la wishlist
+        $wishlistItem = new Wishlist($user, $offer);
+        $this->entityManager->persist($wishlistItem);
+        $this->entityManager->flush();
+
+        $this->session->set('flash', [
+            'type' => 'success',
+            'message' => 'Offre ajoutée à votre wishlist avec succès !'
         ]);
     }
 
+    return $response->withHeader('Location', '/offres')->withStatus(302);
+}
     public function create(Request $request, Response $response): Response {
         $user = $this->session->get('user');
         $data = $request->getParsedBody();
@@ -291,46 +309,16 @@ class OfferController
                     'user_role' => $this->session->get('user')['role']
                 ]);
             }
-
-            public function searchEntreprises(Request $request, Response $response): Response
+            
+            private function getUser(): ?User
 {
-    $queryParams = $request->getQueryParams();
-    $searchTerm = $queryParams['q'] ?? '';
-    $page = isset($queryParams['page']) ? (int)$queryParams['page'] : 1;
-    $limit = 9;
-    $offset = ($page - 1) * $limit;
+    $userId = $this->session->get('user');
 
-    $qb = $this->entityManager->createQueryBuilder()
-        ->select('e')
-        ->from(Entreprise::class, 'e')
-        ->orderBy('e.nom', 'ASC');
-
-    if (!empty($searchTerm)) {
-        $qb->where($qb->expr()->like('e.nom', ':term'))
-           ->setParameter('term', '%'.$searchTerm.'%');
+    if (!$userId) {
+        return null;
     }
 
-    $countQb = clone $qb;
-    $countQb->select('COUNT(e.id)');
-    $totalEntreprises = (int)$countQb->getQuery()->getSingleScalarResult();
-
-    $entreprises = $qb->setFirstResult($offset)
-                     ->setMaxResults($limit)
-                     ->getQuery()
-                     ->getResult();
-
-    $totalPages = max(1, ceil($totalEntreprises / $limit));
-
-    return $this->view->render($response, 'entreprises.html.twig', [
-        'entreprises' => $entreprises,
-        'searchQuery' => $searchTerm,
-        'current_page' => $page,
-        'total_pages' => $totalPages,
-        'total_entreprises' => $totalEntreprises,
-        'is_search' => !empty($searchTerm)
-    ]);
+    return $this->entityManager->getRepository(User::class)->find($userId);
 }
-
-            
 }
         
