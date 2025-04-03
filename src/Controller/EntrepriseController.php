@@ -78,6 +78,33 @@ class EntrepriseController
         ]);
     }
 
+    public function publicList(Request $request, Response $response): Response
+{
+    $repository = $this->entityManager->getRepository(Entreprise::class);
+    
+    // Récupération avec tri + pagination
+    $page = $request->getQueryParams()['page'] ?? 1;
+    $limit = 9;
+    $offset = ($page - 1) * $limit;
+    
+    $entreprises = $repository->findBy(
+        [], 
+        ['nom' => 'ASC'], 
+        $limit, 
+        $offset
+    );
+    
+    $total = $repository->count([]);
+    $totalPages = ceil($total / $limit);
+
+    return $this->view->render($response, 'entreprises.html.twig', [
+        'entreprises' => $entreprises,
+        'current_page' => $page,
+        'total_pages' => $totalPages,
+        'user_role' => $this->session->get('user')['role'] ?? null
+    ]);
+}
+
     public function createForm(Request $request, Response $response): Response
     {
         $user = $this->session->get('user');

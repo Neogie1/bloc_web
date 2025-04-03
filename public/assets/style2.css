@@ -590,3 +590,112 @@ hr {
 .text-muted {
   color: #6b5cf6 !important; /* Applique la couleur au texte de résumé */
 }
+
+/* Styles spécifiques aux cartes entreprises */
+.entreprise-card {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.entreprise-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  border-color: #d1d5db;
+}
+
+/* Bouton "Voir les offres" */
+.btn-hover {
+  transition: all 0.2s ease;
+  background-color: rgba(155, 135, 245, 0.1);
+  color: #6b5cf6;
+  width: 100%;
+  font-weight: 500;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border: none;
+}
+
+.btn-hover:hover {
+  background-color: rgba(139, 92, 246, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(107, 92, 246, 0.2);
+}
+
+/* Notation par étoiles */
+.rating {
+  display: inline-flex;
+  align-items: center;
+}
+
+.rating i.bi-star-fill {
+  font-size: 1rem;
+  margin-right: 0.1rem;
+}
+
+.rating .text-warning {
+  color: #f59e0b;
+}
+
+.rating .text-secondary {
+  color: #d1d5db;
+}
+
+/* Séparateur */
+.separator {
+  border-top: 1px solid #e5e7eb;
+  margin: 1rem 0;
+}
+
+/* Pagination */
+.pagination .page-item.active .page-link {
+  background-color: #6b5cf6;
+  border-color: #6b5cf6;
+  color: white;
+}
+
+.pagination .page-link {
+  color: #6b5cf6;
+  padding: 0.5rem 0.75rem;
+  margin: 0 0.15rem;
+  border-radius: 0.375rem;
+}
+
+.pagination .page-link:hover {
+  color: #4a3cf4;
+  background-color: #f3f4f6;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #9d94f8;
+}
+
+/* Alertes */
+.alert-info {
+  background-color: #f0f9ff;
+  border-color: #bae6fd;
+  color: #0369a1;
+}
+
+.alert-warning {
+  background-color: #fffbeb;
+  border-color: #fde68a;
+  color: #92400e;
+}
+
+/* Icônes */
+.lucide {
+  width: 1rem;
+  height: 1rem;
+  vertical-align: middle;
+}

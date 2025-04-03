@@ -130,6 +130,13 @@ $app->get('/', function (Request $request, Response $response) {
     return $this->get('view')->render($response, 'home.html.twig');
 })->setName('home')->add($app->getContainer()->get(AuthMiddleware::class));
 
+// Routes publiques
+$app->group('', function ($group) {
+    $group->get('/entreprises', [EntrepriseController::class, 'publicList'])->setName('entreprises.list');
+    $group->get('/entreprises/{id}', [EntrepriseController::class, 'publicShow'])->setName('entreprise.show');
+    $group->get('/entreprises/{id}/offres', [EntrepriseController::class, 'entrepriseJobs'])->setName('entreprise.jobs');
+})->add($app->getContainer()->get(ForcedAuthMiddleware::class));
+
 // Route de connexion (GET pour afficher le formulaire)
 $app->get('/login', function (Request $request, Response $response) {
     return $this->get('view')->render($response, 'login.html.twig', [
