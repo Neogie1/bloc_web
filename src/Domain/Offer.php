@@ -2,6 +2,8 @@
 namespace App\Domain;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'offers')]
@@ -11,6 +13,10 @@ class Offer
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
+
+    #[OneToMany(targetEntity: Wishlist::class, mappedBy: 'user')]
+private Collection $wishlists;
+
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $title;
@@ -39,6 +45,7 @@ class Offer
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+        $this->wishlists = new ArrayCollection();
     }
 
     // Getters
@@ -113,4 +120,23 @@ class Offer
         $this->contractType = $contractType;
         return $this;
     }
+
+    public function isInWishlist(?int $userId): bool
+    {
+        if ($userId === null) {
+            return false;
+        }
+    
+        foreach ($this->wishlists as $wishlist) {
+            if ($wishlist->getUser()->getId() === $userId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getWishlists(): Collection
+{
+    return $this->wishlists;
+}
 }

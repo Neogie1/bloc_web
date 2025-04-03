@@ -17,6 +17,7 @@ use App\Controller\OfferController;
 use App\Domain\User;
 use App\Controller\EntrepriseController;
 use App\Controller\ApplicationController;
+use App\Controller\WishlistController;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -92,6 +93,13 @@ $container->set(ApplicationController::class, function (Container $c) {
         $c->get(EntityManagerInterface::class),
         $c->get('view'),
         $c->get('session')
+    );
+});
+
+$container->set(WishlistController::class, function (Container $c) {
+    return new WishlistController(
+        $c->get(EntityManagerInterface::class),
+        $c->get('session') // Seulement les 2 paramètres attendus
     );
 });
 
@@ -258,12 +266,17 @@ $app->group('/admin', function ($group) use ($app) {
 
         // Suppression d'une offre
         $group->post('/{id}/delete', [OfferController::class, 'delete'])->setName('offres.delete');
+        
 })->add($app->getContainer()->get(AuthMiddleware::class));
 })->add($app->getContainer()->get(AdminMiddleware::class))->add($app->getContainer()->get(ForcedAuthMiddleware::class));
 
 // Après les autres routes
 $app->post('/offres/{id}/postuler', [ApplicationController::class, 'submitApplication'])
     ->setName('application.submit')
+    ->add($container->get(ForcedAuthMiddleware::class));
+
+    $app->post('/wishlist/toggle/{id}', [WishlistController::class, 'toggle'])
+    ->setName('wishlist.toggle')
     ->add($container->get(ForcedAuthMiddleware::class));
 
 // ==================================================

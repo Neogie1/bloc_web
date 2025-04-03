@@ -7,6 +7,10 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping\OneToMany;
+
 
 #[Entity, Table(name: 'users')]
 final class User
@@ -44,6 +48,7 @@ final class User
         $this->nom = $nom;
         $this->prenom = $prenom;
         $this->registeredAt = new DateTimeImmutable('now');
+        $this->wishlists = new ArrayCollection();
     }
 
     public function getId(): int
@@ -134,6 +139,11 @@ final class User
     {
         $this->prenom = $prenom;
     }
+
+    public function getWishlists(): Collection
+{
+    return $this->wishlists;
+}
 
  /*   public function searchUsers(string $query): array
 {

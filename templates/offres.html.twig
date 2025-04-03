@@ -79,12 +79,13 @@
             <path d="m21.854 2.147-10.94 10.939"></path>
         </svg>
         Postuler
-    </button>
 <button class="btn btn-hover ms-2 wishlist-btn" 
-    data-offer-id="{{ offer.id }}"
-    style="background-color: rgba(255, 0, 0, 0.1); color: #ff0000; width: 100%; font-weight: 500; padding: 0.5rem; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+        data-offer-id="{{ offer.id }}"
+        data-is-in-wishlist="{{ app.user ? offer.isInWishlist(app.user.id) : false }}"
+        style="background-color: rgba(255, 0, 0, 0.1); color: #ff0000; width: 100%; font-weight: 500; padding: 0.5rem; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center; text-decoration: none;">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart me-2" style="color: #ff0000;">
-      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" 
+              {% if offer.isInWishlist(app.user.id) %}fill="#ff0000"{% endif %}></path>
     </svg>
     Wishlist
 </button>
@@ -298,72 +299,68 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     // 4. Gestion des boutons wishlist
-    const setupWishlistButtons = () => {
-        document.querySelectorAll(".wishlist-btn").forEach(button => {
-            button.addEventListener("click", function() {
-                const offerId = this.getAttribute("data-offer-id");
-                const isActive = this.classList.toggle("active");
+const setupWishlistButtons = () => {
+    document.querySelectorAll(".wishlist-btn").forEach(button => {
+        button.addEventListener("click", async function() {
+            const offerId = this.getAttribute("data-offer-id");
+            const isCurrentlyActive = this.getAttribute("data-is-in-wishlist") === 'true';
+            
+            console.log("Début traitement - OfferID:", offerId, "Actuel:", isCurrentlyActive); // Debug
 
-                fetch(`/wishlist/toggle/${offerId}`, {
+            try {
+                // Désactiver le bouton pendant la requête
+                this.disabled = true;
+                
+                const response = await fetch(`/wishlist/toggle/${offerId}`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ add: isActive })
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    credentials: 'include' // Essentiel pour les sessions
                 });
 
-                const icon = this.querySelector("svg");
-                if (isActive) {
-                    this.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
-                    icon.style.fill = "#ff0000";
-                } else {
-                    this.style.backgroundColor = "rgba(255, 0, 0, 0.1)";
-                    icon.style.fill = "none";
-                }
-            });
-        });
-    };
+                console.log("Réponse reçue - Status:", response.status); // Debug
 
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Erreur serveur: ${response.status} - ${errorText}`);
+                }
+
+                const result = await response.json();
+                console.log("Résultat JSON:", result); // Debug
+                
+                // Mise à jour de l'interface
+                const icon = this.querySelector("svg path");
+                if (result.action === 'added') {
+                    icon.setAttribute("fill", "#ff0000");
+                    this.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
+                    this.setAttribute("data-is-in-wishlist", "true");
+                } else {
+                    icon.removeAttribute("fill");
+                    this.style.backgroundColor = "rgba(255, 0, 0, 0.1)";
+                    this.setAttribute("data-is-in-wishlist", "false");
+                }
+                
+                showToast(result.action === 'added' 
+                    ? 'Ajouté à votre wishlist' 
+                    : 'Retiré de votre wishlist', 
+                    'success');
+                
+            } catch (error) {
+                console.error("Erreur complète:", error); // Debug détaillé
+                showToast(error.message || 'Erreur lors de la mise à jour', 'danger');
+            } finally {
+                this.disabled = false;
+            }
+        });
+    });
+};
     // Initialisation
     initToasts();
     setupApplicationForms();
     setupWishlistButtons();
 });
 </script>
-<style>
-.toast {
-    animation: fadeIn 0.3s ease-out;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    margin-bottom: 1rem;
-}
-
-.toast.bg-success {
-    background-color: #10b981 !important;
-}
-
-.toast.bg-danger {
-    background-color: #ef4444 !important;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.is-invalid {
-    border-color: #ef4444 !important;
-}
-
-.invalid-feedback {
-    color: #ef4444;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-    display: none;
-}
-
-.btn-hover:hover {
-    opacity: 0.9;
-    transition: opacity 0.2s;
-}
-</style>
 {% include 'footer.html.twig' %}
 {% endblock %}
