@@ -291,6 +291,46 @@ class OfferController
                     'user_role' => $this->session->get('user')['role']
                 ]);
             }
+
+            public function searchEntreprises(Request $request, Response $response): Response
+{
+    $queryParams = $request->getQueryParams();
+    $searchTerm = $queryParams['q'] ?? '';
+    $page = isset($queryParams['page']) ? (int)$queryParams['page'] : 1;
+    $limit = 9;
+    $offset = ($page - 1) * $limit;
+
+    $qb = $this->entityManager->createQueryBuilder()
+        ->select('e')
+        ->from(Entreprise::class, 'e')
+        ->orderBy('e.nom', 'ASC');
+
+    if (!empty($searchTerm)) {
+        $qb->where($qb->expr()->like('e.nom', ':term'))
+           ->setParameter('term', '%'.$searchTerm.'%');
+    }
+
+    $countQb = clone $qb;
+    $countQb->select('COUNT(e.id)');
+    $totalEntreprises = (int)$countQb->getQuery()->getSingleScalarResult();
+
+    $entreprises = $qb->setFirstResult($offset)
+                     ->setMaxResults($limit)
+                     ->getQuery()
+                     ->getResult();
+
+    $totalPages = max(1, ceil($totalEntreprises / $limit));
+
+    return $this->view->render($response, 'entreprises.html.twig', [
+        'entreprises' => $entreprises,
+        'searchQuery' => $searchTerm,
+        'current_page' => $page,
+        'total_pages' => $totalPages,
+        'total_entreprises' => $totalEntreprises,
+        'is_search' => !empty($searchTerm)
+    ]);
+}
+
             
 }
         

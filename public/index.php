@@ -135,6 +135,7 @@ $app->group('', function ($group) {
     $group->get('/entreprises', [EntrepriseController::class, 'publicList'])->setName('entreprises.list');
     $group->get('/entreprises/{id}', [EntrepriseController::class, 'publicShow'])->setName('entreprise.show');
     $group->get('/entreprises/{id}/offres', [EntrepriseController::class, 'entrepriseJobs'])->setName('entreprise.jobs');
+
 })->add($app->getContainer()->get(ForcedAuthMiddleware::class));
 
 // Route de connexion (GET pour afficher le formulaire)
