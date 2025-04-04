@@ -9,12 +9,14 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SlimSession\Helper as Session;
+use Slim\Views\Twig;
 
 class WishlistController
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private Session $session
+        private Session $session,
+        private $view
     ) {}
 
     public function toggle(Request $request, Response $response, array $args): Response
@@ -90,4 +92,27 @@ class WishlistController
 
     return $this->jsonResponse($response, $results);
 }
+
+public function showWishlist(Request $request, Response $response, array $args): Response
+{
+    $user = $this->session->get('user');
+    if (!$user) {
+        return $response->withRedirect('/login');  // Redirige l'utilisateur s'il n'est pas authentifié
+    }
+
+    // Récupère toutes les offres présentes dans la wishlist de l'utilisateur
+    $wishlistItems = $this->em->getRepository(Wishlist::class)->findBy(['user' => $user['id']]);
+
+    // Récupère les détails des offres associées à ces items de wishlist
+    $offers = [];
+    foreach ($wishlistItems as $item) {
+        $offers[] = $item->getOffer();
+    }
+
+    // Passe les données à la vue Twig
+    return $this->view->render($response, 'wishlist.html.twig', [
+        'offers' => $offers
+    ]);
+}
+
 }

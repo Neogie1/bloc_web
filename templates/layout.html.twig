@@ -46,7 +46,7 @@
               </a>
             </li>
             <li class="nav-item mx-3">
-              <a class="nav-link" href="#">
+              <a class="nav-link" href="{{ url_for('wishlist') }}">
                 <i class="bi bi-star" style="font-size: 18px; margin-right: 0.5rem"></i>
                 Favoris
               </a>
@@ -117,7 +117,7 @@
         <div class="collapse navbar-collapse" id="mobileNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Rechercher</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Favoris</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('wishlist') }}">Favoris</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url_for('entreprises.search') }}">Entreprises</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Déposer une offre</a></li>
             

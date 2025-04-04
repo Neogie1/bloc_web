@@ -99,7 +99,8 @@ $container->set(ApplicationController::class, function (Container $c) {
 $container->set(WishlistController::class, function (Container $c) {
     return new WishlistController(
         $c->get(EntityManagerInterface::class),
-        $c->get('session') // Seulement les 2 paramètres attendus
+        $c->get('session'),
+        $c->get('view')  // <-- Erreur possible ici
     );
 });
 
@@ -280,6 +281,10 @@ $app->post('/offres/{id}/postuler', [ApplicationController::class, 'submitApplic
     ->add($container->get(ForcedAuthMiddleware::class));
 
     $app->get('/applications/check/{id}', ApplicationController::class . ':checkApplication');
+
+    $app->get('/wishlist', \App\Controller\WishlistController::class . ':showWishlist')
+    ->add($container->get(ForcedAuthMiddleware::class))
+    ->setName('wishlist');
 
 // ==================================================
 // DÉMARRAGE DE L'APPLICATION
