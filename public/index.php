@@ -150,7 +150,7 @@ $app->get('/', function (Request $request, Response $response) {
 
 // Routes publiques
 $app->group('', function ($group) {
-    $group->get('/entreprises', [EntrepriseController::class, 'publicList'])->setName('entreprises.list');
+    $group->get('/entreprises', [EntrepriseController::class, 'publicList'])->setName('entreprises.search');
     $group->get('/entreprises/{id}', [EntrepriseController::class, 'publicShow'])->setName('entreprise.show');
     $group->get('/entreprises/{id}/offres', [EntrepriseController::class, 'entrepriseJobs'])->setName('entreprise.jobs');
 
