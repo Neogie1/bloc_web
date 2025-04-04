@@ -5,7 +5,7 @@ namespace App\Domain;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Domain\User;
-use App\Domain\Offer; // Supposons que vous avez une entité Offer
+use App\Domain\Offer;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'wishlists')]

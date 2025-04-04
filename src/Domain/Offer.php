@@ -139,4 +139,15 @@ private Collection $wishlists;
 {
     return $this->wishlists;
 }
+
+public function hasUserApplied(int $userId): bool
+{
+    foreach ($this->applications as $application) {
+        if ($application->getUser()->getId() === $userId) {
+            return true;
+        }
+    }
+    return false;
+}
+
 }

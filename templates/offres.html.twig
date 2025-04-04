@@ -220,8 +220,7 @@
   {% endif %}
 </div>
 <script>
-// Déplacer tout le code JS en dehors de la boucle Twig
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     // 1. Initialisation des toasts
     const initToasts = () => {
         if (!document.getElementById('toast-container')) {
@@ -233,7 +232,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     };
 
-    // 2. Fonction pour afficher les toasts
+    // 2. Fonction pour afficher un toast
     const showToast = (message, type = 'success') => {
         const toastEl = document.createElement('div');
         toastEl.className = `toast show align-items-center text-white bg-${type}`;
@@ -247,17 +246,45 @@ document.addEventListener("DOMContentLoaded", function() {
         setTimeout(() => toastEl.remove(), 5000);
     };
 
-    // 3. Gestion des formulaires de candidature
+    // 3. Vérifier si l'utilisateur a déjà postulé
+    const checkApplicationStatus = async (offerId, submitBtn) => {
+        try {
+            const response = await fetch(`/applications/check/${offerId}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                const btnText = submitBtn.querySelector('.btn-text');
+
+                if (result.hasApplied) {
+                    submitBtn.disabled = true;
+                    btnText.textContent = 'Déjà postulé';
+                    submitBtn.style.opacity = '0.7';
+                }
+            }
+        } catch (error) {
+            console.error('Erreur vérification candidature:', error);
+        }
+    };
+
+    // 4. Gestion des soumissions de candidature
     const setupApplicationForms = () => {
         document.querySelectorAll('[id^="applicationForm"]').forEach(form => {
-            form.addEventListener('submit', async function(e) {
+            const offerId = form.id.replace('applicationForm', '');
+            const submitBtn = form.querySelector('.submit-btn');
+
+            // Vérifier si l'utilisateur a déjà postulé
+            checkApplicationStatus(offerId, submitBtn);
+
+            form.addEventListener('submit', async function (e) {
                 e.preventDefault();
-                
-                const submitBtn = this.querySelector('.submit-btn');
+
                 const btnText = submitBtn.querySelector('.btn-text');
                 const spinner = submitBtn.querySelector('.spinner-border');
-                
-                // État de chargement
+
+                // Afficher le chargement
                 submitBtn.disabled = true;
                 btnText.textContent = 'Envoi en cours...';
                 spinner.classList.remove('d-none');
@@ -267,95 +294,88 @@ document.addEventListener("DOMContentLoaded", function() {
                     const response = await fetch(this.action, {
                         method: 'POST',
                         body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
                     });
 
                     const result = await response.json();
-                    
+
                     if (response.ok) {
-                        showToast(result.message || 'Candidature envoyée !', 'success');
-                        
-                        // Fermer le modal
+                        showToast('Candidature envoyée avec succès !', 'success');
+
+                        // Désactiver le bouton après succès
+                        submitBtn.disabled = true;
+                        btnText.textContent = 'Déjà postulé';
+                        submitBtn.style.opacity = '0.7';
+
+                        // Fermer le modal après 1,5 seconde
                         const modal = bootstrap.Modal.getInstance(this.closest('.modal'));
-                        setTimeout(() => {
-                            modal.hide();
-                            this.reset();
-                        }, 1500);
+                        setTimeout(() => modal.hide(), 1500);
                     } else {
-                        showToast(result.message || 'Erreur', 'danger');
+                        showToast(result.error || 'Erreur lors de la candidature', 'danger');
+                        submitBtn.disabled = false;
+                        btnText.textContent = 'Envoyer ma candidature';
                     }
                 } catch (error) {
                     showToast('Erreur réseau', 'danger');
                     console.error(error);
-                } finally {
                     submitBtn.disabled = false;
                     btnText.textContent = 'Envoyer ma candidature';
+                } finally {
                     spinner.classList.add('d-none');
                 }
             });
         });
     };
 
-    // 4. Gestion des boutons wishlist
-const setupWishlistButtons = () => {
-    document.querySelectorAll(".wishlist-btn").forEach(button => {
-        button.addEventListener("click", async function() {
-            const offerId = this.getAttribute("data-offer-id");
-            const isCurrentlyActive = this.getAttribute("data-is-in-wishlist") === 'true';
-            
-            console.log("Début traitement - OfferID:", offerId, "Actuel:", isCurrentlyActive); // Debug
+    // 5. Gestion des boutons wishlist
+    const setupWishlistButtons = () => {
+        document.querySelectorAll(".wishlist-btn").forEach(button => {
+            button.addEventListener("click", async function () {
+                const offerId = this.getAttribute("data-offer-id");
+                const isCurrentlyActive = this.getAttribute("data-is-in-wishlist") === 'true';
 
-            try {
-                // Désactiver le bouton pendant la requête
-                this.disabled = true;
-                
-                const response = await fetch(`/wishlist/toggle/${offerId}`, {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json",
-                        "X-Requested-With": "XMLHttpRequest"
-                    },
-                    credentials: 'include' // Essentiel pour les sessions
-                });
+                try {
+                    this.disabled = true;
 
-                console.log("Réponse reçue - Status:", response.status); // Debug
+                    const response = await fetch(`/wishlist/toggle/${offerId}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+                        credentials: 'include'
+                    });
 
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Erreur serveur: ${response.status} - ${errorText}`);
+                    if (!response.ok) throw new Error(`Erreur serveur: ${response.status}`);
+
+                    const result = await response.json();
+                    const icon = this.querySelector("svg path");
+
+                    if (result.action === 'added') {
+                        icon.setAttribute("fill", "#ff0000");
+                        this.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
+                        this.setAttribute("data-is-in-wishlist", "true");
+                    } else {
+                        icon.removeAttribute("fill");
+                        this.style.backgroundColor = "rgba(255, 0, 0, 0.1)";
+                        this.setAttribute("data-is-in-wishlist", "false");
+                    }
+
+                    showToast(result.action === 'added'
+                        ? 'Ajouté à votre wishlist'
+                        : 'Retiré de votre wishlist',
+                        'success');
+
+                } catch (error) {
+                    console.error("Erreur:", error);
+                    showToast(error.message || 'Erreur lors de la mise à jour', 'danger');
+                } finally {
+                    this.disabled = false;
                 }
-
-                const result = await response.json();
-                console.log("Résultat JSON:", result); // Debug
-                
-                // Mise à jour de l'interface
-                const icon = this.querySelector("svg path");
-                if (result.action === 'added') {
-                    icon.setAttribute("fill", "#ff0000");
-                    this.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
-                    this.setAttribute("data-is-in-wishlist", "true");
-                } else {
-                    icon.removeAttribute("fill");
-                    this.style.backgroundColor = "rgba(255, 0, 0, 0.1)";
-                    this.setAttribute("data-is-in-wishlist", "false");
-                }
-                
-                showToast(result.action === 'added' 
-                    ? 'Ajouté à votre wishlist' 
-                    : 'Retiré de votre wishlist', 
-                    'success');
-                
-            } catch (error) {
-                console.error("Erreur complète:", error); // Debug détaillé
-                showToast(error.message || 'Erreur lors de la mise à jour', 'danger');
-            } finally {
-                this.disabled = false;
-            }
+            });
         });
-    });
-};
+    };
+
     // Initialisation
     initToasts();
     setupApplicationForms();

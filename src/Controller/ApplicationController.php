@@ -18,16 +18,48 @@ class ApplicationController
         private Session $session
     ) {}
 
+    // Ajoutez cette méthode à votre ApplicationController
+    private function jsonResponse(Response $response, $data, int $status = 200): Response
+    {
+        $response->getBody()->write(json_encode($data));
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus($status);
+    }
+
+    public function checkApplication(Request $request, Response $response, array $args): Response
+    {
+        $user = $this->session->get('user');
+        if (!$user) {
+            return $this->jsonResponse($response, ['error' => 'Unauthorized'], 401);
+        }
+
+        $hasApplied = $this->em->getRepository(Application::class)->count([
+            'user' => $user['id'],
+            'offer' => $args['id']
+        ]) > 0;
+
+        return $this->jsonResponse($response, ['hasApplied' => $hasApplied]);
+    }
+
     public function submitApplication(Request $request, Response $response, array $args): Response
     {
         // 1. Vérification utilisateur connecté
         $user = $this->session->get('user');
         if (!$user) {
-            $this->session->set('flash', [
-                'type' => 'error',
-                'message' => 'Veuillez vous connecter'
-            ]);
-            return $response->withHeader('Location', '/login')->withStatus(302);
+            return $this->jsonResponse($response, ['error' => 'Unauthorized'], 401);
+        }
+
+        // Vérification si déjà postulé
+        $alreadyApplied = $this->em->getRepository(Application::class)->count([
+            'user' => $user['id'], 
+            'offer' => $args['id']
+        ]) > 0;
+
+        if ($alreadyApplied) {
+            return $this->jsonResponse($response, [
+                'error' => 'Vous avez déjà postulé à cette offre'
+            ], 400);
         }
 
         // 2. Récupération des fichiers
@@ -56,11 +88,7 @@ class ApplicationController
 
         // 4. Si erreurs, retourner avec messages
         if (!empty($errors)) {
-            $this->session->set('flash', [
-                'type' => 'error',
-                'messages' => $errors
-            ]);
-            return $response->withHeader('Location', '/offres/list')->withStatus(302);
+            return $this->jsonResponse($response, ['errors' => $errors], 400);
         }
 
         try {
@@ -87,42 +115,19 @@ class ApplicationController
             $this->em->persist($application);
             $this->em->flush();
 
-            // 7. Succès - prépare la réponse
-            $isAjax = strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest';
-
-            if ($isAjax) {
-                $response->getBody()->write(json_encode([
-                    'success' => true,
-                    'message' => 'Candidature envoyée avec succès !'
-                ]));
-                return $response->withHeader('Content-Type', 'application/json');
-            }
-
-            $this->session->set('flash', [
-                'type' => 'success',
+            // 7. Réponse uniforme
+            return $this->jsonResponse($response, [
+                'success' => true,
                 'message' => 'Candidature envoyée avec succès !'
             ]);
-            return $response->withHeader('Location', '/offres/list')->withStatus(302);
 
         } catch (\Exception $e) {
             // 8. Gestion des erreurs
-            $isAjax = strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest';
-
-            if ($isAjax) {
-                $response->getBody()->write(json_encode([
-                    'success' => false,
-                    'message' => 'Erreur lors de l\'envoi de la candidature'
-                ]));
-                return $response
-                    ->withHeader('Content-Type', 'application/json')
-                    ->withStatus(500);
-            }
-
-            $this->session->set('flash', [
-                'type' => 'error',
-                'message' => 'Erreur lors de l\'envoi de la candidature'
-            ]);
-            return $response->withHeader('Location', '/offres/list')->withStatus(302);
+            return $this->jsonResponse($response, [
+                'error' => 'Erreur lors de l\'envoi de la candidature'
+            ], 500);
         }
     }
+
+    
 }

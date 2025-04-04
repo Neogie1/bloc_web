@@ -279,6 +279,8 @@ $app->post('/offres/{id}/postuler', [ApplicationController::class, 'submitApplic
     ->setName('wishlist.toggle')
     ->add($container->get(ForcedAuthMiddleware::class));
 
+    $app->get('/applications/check/{id}', ApplicationController::class . ':checkApplication');
+
 // ==================================================
 // DÉMARRAGE DE L'APPLICATION
 // ==================================================
