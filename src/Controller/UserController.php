@@ -183,23 +183,23 @@ class UserController
         // Validation
         if (empty($data['email']) || empty($data['password'])) {
             $this->session->set('error', 'Email et mot de passe requis');
-            return $response->withHeader('Location', '/register')->withStatus(302);
+            return $response->withHeader('Location', '/admin/users/new')->withStatus(302);
         }
-
+    
         // Vérification email existant
         $existingUser = $this->entityManager->getRepository(User::class)
             ->findOneBy(['email' => $data['email']]);
             
         if ($existingUser) {
             $this->session->set('error', 'Cet email est déjà utilisé');
-            return $response->withHeader('Location', '/register')->withStatus(302);
+            return $response->withHeader('Location', '/admin/users/new')->withStatus(302);
         }
-
-        $role = isset($data['role']) ? $data['role'] : User::ROLE_ETUDIANT;
-
+    
+        $role = $data['role'] ?? User::ROLE_ETUDIANT;
+    
         // Hachage du mot de passe
         $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
-
+    
         $user = new User(
             $data['email'],
             $hashedPassword,
@@ -207,19 +207,13 @@ class UserController
             $data['prenom'],
             $role
         );
-
-
+    
         $this->entityManager->persist($user);
         $this->entityManager->flush();
-
-        // Connexion automatique
-        $this->session->set('user', [
-            'id' => $user->getId(),
-            'email' => $user->getEmail(),
-            'role' => $user->getRole()
-        ]);
-
-        return $response->withHeader('Location', '/dashboard')->withStatus(302);
+    
+        // Message de succès et redirection vers la liste
+        $this->session->set('success', 'Utilisateur créé avec succès');
+        return $response->withHeader('Location', '/admin/users')->withStatus(302);
     }
 
     public function showCreateForm(Request $request, Response $response, $args)
